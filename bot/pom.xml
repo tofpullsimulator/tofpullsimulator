@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.eos.tof</groupId>
+    <artifactId>simulator</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>simulator-bot</artifactId>
+  <packaging>jar</packaging>
+  <name>simulator-bot</name>
+  <description>ToF Pulling Simulator Discord Bot</description>
+
+  <properties>
+    <discord4j.version>3.2.5</discord4j.version>
+    <reactor.version>3.5.8</reactor.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.eos.tof</groupId>
+      <artifactId>simulator-common</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.discord4j</groupId>
+      <artifactId>discord4j-core</artifactId>
+      <version>${discord4j.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>io.projectreactor</groupId>
+      <artifactId>reactor-test</artifactId>
+      <version>${reactor.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>com.heroku.sdk</groupId>
+        <artifactId>heroku-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>deploy</phase>
+            <goals>
+              <goal>deploy</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

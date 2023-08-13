@@ -1,0 +1,55 @@
+{
+  "name": "banner",
+  "description": "Banner",
+  "options": [
+    {
+      "name": "create",
+      "description": "Create a new banner",
+      "type": 1,
+      "options": [
+        {
+          "name": "name",
+          "description": "Weapon name",
+          "type": 3,
+          "required": true,
+          "autocomplete": true
+        },
+        {
+          "name": "theory",
+          "description": "Use 50/50 theory",
+          "type": 5
+        }
+      ]
+    },
+    {
+      "name": "pull",
+      "description": "Pull on the banner",
+      "type": 1,
+      "options": [
+        {
+          "name": "amount",
+          "description": "Pull amount",
+          "type": 4,
+          "required": true,
+          "autocomplete": true
+        },
+        {
+          "name": "name",
+          "description": "Weapon name",
+          "type": 3,
+          "autocomplete": true
+        },
+        {
+          "name": "theory",
+          "description": "Use 50/50 theory",
+          "type": 5
+        }
+      ]
+    },
+    {
+      "name": "reset",
+      "description": "Reset the banner",
+      "type": 1
+    }
+  ]
+}
