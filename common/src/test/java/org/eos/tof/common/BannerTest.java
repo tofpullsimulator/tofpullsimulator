@@ -55,4 +55,12 @@ class BannerTest {
         banner.pull(-1);
         Assertions.assertEquals(7, banner.getStatistics().get(StatisticsCounter.BANNER_WEAPON));
     }
+
+    @Test
+    void shouldThrowNPEWhenNoSpec() {
+        bannerFactory.setSpec(null);
+        var banner = bannerFactory.getObject();
+
+        Assertions.assertThrows(NullPointerException.class, () -> banner.pull(1));
+    }
 }

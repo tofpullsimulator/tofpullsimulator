@@ -89,11 +89,11 @@ public class Banner {
         /**
          * Rubilia spec.
          */
-        RUBILIA("Lost Art", "RUBILIA"),
+        RUBILIA("Lost Art", "Rubilia"),
         /**
          * Gnonno spec.
          */
-        GNONNO("Mini Hurricane", "GNONNO"),
+        GNONNO("Mini Hurricane", "Gnonno"),
         /**
          * Fiona spec.
          */
@@ -105,7 +105,7 @@ public class Banner {
         /**
          * Lan spec.
          */
-        LAN("Lingguang", "LAN"),
+        LAN("Lingguang", "Lan"),
         /**
          * Fenrir spec.
          */
