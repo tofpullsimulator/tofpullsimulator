@@ -84,6 +84,15 @@ class BannerServiceTest {
     }
 
     @Test
+    void shouldOverwriteExistingBanner() {
+        var banner = service.get(1L, "Yu Lan").block();
+        var mono = service.get(1L, "Yu Lan", true, true);
+        StepVerifier.create(mono)
+                .assertNext(cache -> Assertions.assertNotEquals(banner, cache))
+                .verifyComplete();
+    }
+
+    @Test
     void shouldPullOnAnExistingBanner() {
         var banner = service.get(1L, "Yu Lan").block();
         var mono = service.pull(1L, 10L);

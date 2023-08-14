@@ -49,7 +49,7 @@ public class CreateCommand extends AbstractBannerSubCommand implements SlashSubC
         @SuppressWarnings({"java:S3655", "OptionalGetWithoutIsPresent"})
         long id = member.get().getUserData().id().asLong();
 
-        return bannerService.get(id, name, isTheory).flatMap(b -> {
+        return bannerService.get(id, name, isTheory, true).flatMap(b -> {
             var spec = b.getSpec();
             return event.reply()
                     .withEphemeral(true)

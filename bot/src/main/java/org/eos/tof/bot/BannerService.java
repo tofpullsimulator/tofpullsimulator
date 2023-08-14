@@ -77,7 +77,7 @@ public class BannerService {
      * @throws NullPointerException If no banner was found in the cache.
      */
     public Mono<Banner> get(final long member, final String name) {
-        return get(member, name, true);
+        return get(member, name, true, false);
     }
 
     /**
@@ -91,12 +91,27 @@ public class BannerService {
      * @throws NullPointerException If no banner was found in the cache.
      */
     public Mono<Banner> get(final long member, final String name, final boolean isTheory) {
+        return get(member, name, isTheory, false);
+    }
+
+    /**
+     * Get the current banner of the member.
+     *
+     * @param member   The id of the member to get the banner for.
+     * @param name     The name of the banner to get. If the member already has a banner in the cache, but the name of
+     *                 the cached banner is different from the given on it will create a new banner.
+     * @param isTheory Use the theory mode for banner.
+     * @param evict    Evict the banner from the cache if it was present.
+     * @return The current banner of the user.
+     * @throws NullPointerException If no banner was found in the cache.
+     */
+    public Mono<Banner> get(final long member, final String name, final boolean isTheory, final boolean evict) {
         try {
             Cache cache = getCache();
 
             Banner.Spec spec = Banner.Spec.valueOf(name.toUpperCase().replace(" ", ""));
             Banner cached = cache.get(member, getter(spec, isTheory));
-            if (cached != null && cached.getSpec() != spec) {
+            if (cached != null && (cached.getSpec() != spec || evict)) {
                 cache.evict(member);
                 cached.reset();
             }
@@ -136,7 +151,7 @@ public class BannerService {
      * @throws NullPointerException If no banner was found in the cache.
      */
     public Mono<Banner> pull(final long member, final String name, final boolean isTheory, final long amount) {
-        return get(member, name, isTheory)
+        return get(member, name, isTheory, false)
                 .map(banner -> banner.pull(amount));
     }
 
