@@ -55,9 +55,72 @@ public class PityCounter implements Counter {
     );
 
     /**
+     * Get the value of {@link #SSR} from the counter.
+     *
+     * @return The value of {@link #SSR}.
+     */
+    public Integer getSSR() {
+        return get(SSR);
+    }
+
+    /**
+     * Get the value of {@link #SR} from the counter.
+     *
+     * @return The value of {@link #SR}.
+     */
+    public Integer getSR() {
+        return get(SR);
+    }
+
+    /**
+     * Get the value of {@link #HIT} from the counter.
+     *
+     * @return The value of {@link #HIT}.
+     */
+    public Integer getHit() {
+        return get(HIT);
+    }
+
+    /**
+     * Get the value of {@link #LOST} from the counter.
+     *
+     * @return The value of {@link #LOST}.
+     */
+    public Integer getLost() {
+        return get(LOST);
+    }
+
+    /**
+     * Get the value of {@link #WON} from the counter.
+     *
+     * @return The value of {@link #WON}.
+     */
+    public Integer getWon() {
+        return get(WON);
+    }
+
+    /**
+     * Get the value of {@link #LOST_IN_A_ROW} from the counter.
+     *
+     * @return The value of {@link #LOST_IN_A_ROW}.
+     */
+    public Integer getLostInARow() {
+        return get(LOST_IN_A_ROW);
+    }
+
+    /**
+     * Get the value of {@link #WON_IN_A_ROW} from the counter.
+     *
+     * @return The value of {@link #WON_IN_A_ROW}.
+     */
+    public Integer getWonInARow() {
+        return get(WON_IN_A_ROW);
+    }
+
+    /**
      * Check if the pity is to hit for SSR rarity.
      *
-     * @return True if the {@see PityCounter.SSR} is 80.
+     * @return True if the {@link #SSR} counter is 80.
      */
     public boolean isSsrPity() {
         return get(SSR) == 80;
@@ -66,7 +129,7 @@ public class PityCounter implements Counter {
     /**
      * Check if the pity is to hit for SR rarity.
      *
-     * @return True if the {@see PityCounter.SR} is 10 or {@see PityCounter.SSR} is 79.
+     * @return True if the {@link #SR} counter is 10 or {@link #SSR} counter is 79.
      */
     public boolean isSrPity() {
         return get(SR) == 10 || store.get(SSR).get() == 79;

@@ -1,19 +1,17 @@
-package org.eos.tof.bot.commands.banner;
+package org.eos.tof.bot.listeners;
 
+import discord4j.core.GatewayDiscordClient;
+import org.springframework.boot.test.context.SpringBootTest;
 import discord4j.core.event.domain.interaction.ChatInputAutoCompleteEvent;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
-import discord4j.core.object.command.ApplicationCommandInteractionOption;
 import discord4j.core.spec.InteractionApplicationCommandCallbackReplyMono;
-import org.eos.tof.bot.BannerService;
-import org.junit.jupiter.api.Assertions;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
@@ -21,24 +19,21 @@ import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest(classes = {ResetCommand.class, BannerService.class})
-@ComponentScan(basePackages = {"org.eos.tof.common"})
-@EnableAutoConfiguration
-class ResetCommandTest {
+@SpringBootTest(classes = {SlashCommandListener.class, MockCommands.class})
+class SlashCommandListenerTest {
 
     @Autowired
-    private ResetCommand command;
-    @Autowired
-    private BannerService service;
+    private SlashCommandListener listener;
 
+    @SuppressWarnings("unused")
+    @MockBean(answer = Answers.RETURNS_DEEP_STUBS)
+    private GatewayDiscordClient client;
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private InteractionApplicationCommandCallbackReplyMono reply;
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private ChatInputInteractionEvent interactionEvent;
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private ChatInputAutoCompleteEvent autoCompleteEvent;
-    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-    private ApplicationCommandInteractionOption option;
 
     @BeforeEach
     void setUp() {
@@ -49,28 +44,23 @@ class ResetCommandTest {
     }
 
     @Test
-    void shouldGetTheNameOfTheCommand() {
-        Assertions.assertEquals("banner reset", command.getName());
-    }
-
-    @Test
     void shouldHandleInteractionEvent() {
-        service.pull(0L, "Yu Lan", true, 10).block();
-        command.handle(interactionEvent, option).block();
-
-        var mono = service.get(0L);
+        when(interactionEvent.getCommandName()).thenReturn("mock");
+        var mono = listener.handle(interactionEvent);
         StepVerifier.create(mono).verifyComplete();
     }
 
     @Test
-    void shouldHandleError() {
-        var mono = command.handleError(interactionEvent, new Throwable("This is a test"));
-        StepVerifier.create(mono).verifyComplete();
+    void shouldFailInteractionEvent() {
+        when(interactionEvent.getCommandName()).thenReturn("failing");
+        var mono = listener.handle(interactionEvent);
+        StepVerifier.create(mono).verifyError();
     }
 
     @Test
-    void shouldSkipAutoCompleteEvent() {
-        var mono = command.handle(autoCompleteEvent, option);
+    void shouldHandleAutoCompleteEvent() {
+        when(autoCompleteEvent.getCommandName()).thenReturn("mock");
+        var mono = listener.handle(autoCompleteEvent);
         StepVerifier.create(mono).verifyComplete();
     }
 }

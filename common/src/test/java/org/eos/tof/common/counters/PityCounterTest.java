@@ -19,6 +19,48 @@ class PityCounterTest {
         pity.reset();
     }
 
+    @Test
+    void shouldGetValueOfSSRCounter() {
+        pity.set(PityCounter.SSR, 1);
+        Assertions.assertEquals(1, pity.getSSR());
+    }
+
+    @Test
+    void shouldGetValueOfSRCounter() {
+        pity.set(PityCounter.SR, 1);
+        Assertions.assertEquals(1, pity.getSR());
+    }
+
+    @Test
+    void shouldGetValueOfHitCounter() {
+        pity.set(PityCounter.HIT, 1);
+        Assertions.assertEquals(1, pity.getHit());
+    }
+
+    @Test
+    void shouldGetValueOfLostCounter() {
+        pity.set(PityCounter.LOST, 1);
+        Assertions.assertEquals(1, pity.getLost());
+    }
+
+    @Test
+    void shouldGetValueOfWonCounter() {
+        pity.set(PityCounter.WON, 1);
+        Assertions.assertEquals(1, pity.getWon());
+    }
+
+    @Test
+    void shouldGetValueOfLostInARowCounter() {
+        pity.set(PityCounter.LOST_IN_A_ROW, 1);
+        Assertions.assertEquals(1, pity.getLostInARow());
+    }
+
+    @Test
+    void shouldGetValueOfWonInARowCounter() {
+        pity.set(PityCounter.WON_IN_A_ROW, 1);
+        Assertions.assertEquals(1, pity.getWonInARow());
+    }
+
     @CsvSource({
             "80,true",
             "79,false"

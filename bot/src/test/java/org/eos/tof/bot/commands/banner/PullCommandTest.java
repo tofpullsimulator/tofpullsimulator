@@ -64,7 +64,7 @@ class PullCommandTest {
 
     @BeforeEach
     void setUp() {
-        service.reset(0L);
+        service.reset(0L).block();
 
         when(reply.withEphemeral(anyBoolean())).thenReturn(reply);
         when(reply.withContent(anyString())).thenReturn(reply);
@@ -136,7 +136,7 @@ class PullCommandTest {
         when(autoCompleteEvent.getFocusedOption()).thenReturn(focusedOption);
         when(autoCompleteEvent.respondWithSuggestions(any())).thenReturn(Mono.empty());
 
-        var mono = command.handle(autoCompleteEvent);
+        var mono = command.handle(autoCompleteEvent, option);
         StepVerifier.create(mono).verifyComplete();
     }
 
@@ -146,7 +146,7 @@ class PullCommandTest {
         when(focusedOption.getName()).thenReturn("invalid");
         when(autoCompleteEvent.getFocusedOption()).thenReturn(focusedOption);
 
-        var mono = command.handle(autoCompleteEvent);
+        var mono = command.handle(autoCompleteEvent, option);
         StepVerifier.create(mono).verifyComplete();
     }
 }

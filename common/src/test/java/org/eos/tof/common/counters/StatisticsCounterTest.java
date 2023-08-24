@@ -33,6 +33,36 @@ class StatisticsCounterTest {
     }
 
     @Test
+    void shouldGetValueOfSSRCounter() {
+        statistics.set(StatisticsCounter.SSR, 1);
+        Assertions.assertEquals(1, statistics.getSSR());
+    }
+
+    @Test
+    void shouldGetValueOfSRCounter() {
+        statistics.set(StatisticsCounter.SR, 1);
+        Assertions.assertEquals(1, statistics.getSR());
+    }
+
+    @Test
+    void shouldGetValueOfRareCounter() {
+        statistics.set(StatisticsCounter.R, 1);
+        Assertions.assertEquals(1, statistics.getRare());
+    }
+
+    @Test
+    void shouldGetValueOfNormalCounter() {
+        statistics.set(StatisticsCounter.N, 1);
+        Assertions.assertEquals(1, statistics.getNormal());
+    }
+
+    @Test
+    void shouldGetValueOfBannerWeaponCounter() {
+        statistics.set(StatisticsCounter.BANNER_WEAPON, 1);
+        Assertions.assertEquals(1, statistics.getWeaponBanner());
+    }
+
+    @Test
     void shouldThrowExceptionWhenGettingWithoutMetricName() {
         Assertions.assertThrows(UnsupportedOperationException.class,
                 () -> statistics.get());

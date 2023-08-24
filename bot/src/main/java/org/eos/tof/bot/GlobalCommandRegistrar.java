@@ -30,7 +30,7 @@ import reactor.core.publisher.Flux;
 public class GlobalCommandRegistrar implements ApplicationRunner {
 
     private final RestClient restClient;
-    private final long guildId;
+    private final Long guildId;
 
     /**
      * Creates commands from JSON files in <pre>resources/commands/</pre>. The commands are registered to the guild if
@@ -41,6 +41,10 @@ public class GlobalCommandRegistrar implements ApplicationRunner {
      */
     @Override
     public void run(final ApplicationArguments arguments) throws IOException {
+        run(arguments, guildId);
+    }
+
+    void run(final ApplicationArguments arguments, final Long guildId) throws IOException {
         JacksonResources d4jMapper = JacksonResources.create();
         PathMatchingResourcePatternResolver matcher = new PathMatchingResourcePatternResolver();
 

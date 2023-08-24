@@ -39,7 +39,7 @@ class PullHandlerTest {
     private RandomGenerator rng;
 
     @Autowired
-    private BannerFactory bannerFactory;
+    private BannerFactory factory;
     @Autowired
     private PullHandler handler;
 
@@ -47,8 +47,8 @@ class PullHandlerTest {
 
     @BeforeEach
     void setUp() {
-        bannerFactory.setSpec(Banner.Spec.YULAN);
-        banner = bannerFactory.getObject();
+        factory.setSpec(Banner.Spec.YULAN);
+        banner = factory.getObject();
     }
 
     @AfterEach

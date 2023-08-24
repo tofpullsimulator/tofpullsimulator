@@ -22,9 +22,7 @@ public interface SlashCommand {
      * @param event The interaction event to be handled.
      * @return The result of the handled event.
      */
-    default Mono<Void> handle(final ChatInputInteractionEvent event) {
-        return Mono.empty();
-    }
+    Mono<Void> handle(final ChatInputInteractionEvent event);
 
     /**
      * Handle the errors of the command.
@@ -41,7 +39,5 @@ public interface SlashCommand {
      * @param event The autocomplete event to be handled.
      * @return The result of the handled event.
      */
-    default Mono<Void> handle(final ChatInputAutoCompleteEvent event) {
-        return Mono.empty();
-    }
+    Mono<Void> handle(final ChatInputAutoCompleteEvent event);
 }

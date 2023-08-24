@@ -1,6 +1,8 @@
 package org.eos.tof.bot.commands.banner;
 
+import discord4j.core.event.domain.interaction.ChatInputAutoCompleteEvent;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
+import discord4j.core.object.command.ApplicationCommandInteractionOption;
 import discord4j.core.object.entity.Member;
 
 import java.util.Optional;
@@ -34,7 +36,8 @@ public class ResetCommand extends AbstractBannerSubCommand implements SlashSubCo
      * {@inheritDoc}
      */
     @Override
-    public Mono<Void> handle(final ChatInputInteractionEvent event) {
+    public Mono<Void> handle(final ChatInputInteractionEvent event,
+                             final ApplicationCommandInteractionOption option) {
         Optional<Member> member = event.getInteraction().getMember();
         @SuppressWarnings({"java:S3655", "OptionalGetWithoutIsPresent"})
         long id = member.get().getUserData().id().asLong();
@@ -57,5 +60,14 @@ public class ResetCommand extends AbstractBannerSubCommand implements SlashSubCo
                 .withEphemeral(true)
                 .withContent("Sorry, an error occurred while resetting the banner")
                 .then();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Mono<Void> handle(final ChatInputAutoCompleteEvent event,
+                             final ApplicationCommandInteractionOption option) {
+        return Mono.empty();
     }
 }

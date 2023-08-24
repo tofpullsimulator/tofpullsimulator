@@ -35,7 +35,7 @@ class SSRareHelperTest {
     private RandomGenerator rng;
 
     @Autowired
-    private BannerFactory bannerFactory;
+    private BannerFactory factory;
     @Autowired
     private SSRareHelper helper;
 
@@ -44,8 +44,8 @@ class SSRareHelperTest {
     @BeforeEach
     void setUp() {
         when(rng.nextBoolean()).thenReturn(true);
-        bannerFactory.setSpec(Banner.Spec.YULAN);
-        banner = bannerFactory.getObject();
+        factory.setSpec(Banner.Spec.YULAN);
+        banner = factory.getObject();
     }
 
     @AfterEach

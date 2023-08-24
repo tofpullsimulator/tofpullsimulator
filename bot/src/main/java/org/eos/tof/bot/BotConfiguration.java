@@ -3,6 +3,7 @@ package org.eos.tof.bot;
 import discord4j.core.DiscordClientBuilder;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.rest.RestClient;
+import lombok.Generated;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +19,7 @@ public class BotConfiguration {
     @Value("${discord.token}")
     private String token;
 
-    @Value("${discord.guildId:-1L}")
+    @Value("${discord.guildId:-1}")
     private long guildId;
 
     /**
@@ -26,6 +27,7 @@ public class BotConfiguration {
      *
      * @return The configured discord client.
      */
+    @Generated
     @Bean
     public GatewayDiscordClient client() {
         return DiscordClientBuilder.create(token)
@@ -40,6 +42,7 @@ public class BotConfiguration {
      * @param client The discord client, {@link BotConfiguration#client()}.
      * @return The reset client of the discord client.
      */
+    @Generated
     @Bean
     public RestClient restClient(final GatewayDiscordClient client) {
         return client.getRestClient();

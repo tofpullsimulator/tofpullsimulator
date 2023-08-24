@@ -86,7 +86,7 @@ class CreateCommandTest {
         when(autoCompleteEvent.getFocusedOption()).thenReturn(focusedOption);
         when(autoCompleteEvent.respondWithSuggestions(any())).thenReturn(Mono.empty());
 
-        var mono = command.handle(autoCompleteEvent);
+        var mono = command.handle(autoCompleteEvent, option);
         StepVerifier.create(mono).verifyComplete();
     }
 
@@ -96,7 +96,7 @@ class CreateCommandTest {
         when(focusedOption.getName()).thenReturn("invalid");
         when(autoCompleteEvent.getFocusedOption()).thenReturn(focusedOption);
 
-        var mono = command.handle(autoCompleteEvent);
+        var mono = command.handle(autoCompleteEvent, option);
         StepVerifier.create(mono).verifyComplete();
     }
 }

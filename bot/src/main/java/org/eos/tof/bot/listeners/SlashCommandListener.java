@@ -41,14 +41,11 @@ public class SlashCommandListener {
      * @param event The interaction event to be handled.
      * @return The response of the handled command, or nothing if there is no command for the event.
      */
-    public Mono<Void> handle(final ChatInputInteractionEvent event) {
+    Mono<Void> handle(final ChatInputInteractionEvent event) {
         return Flux.fromIterable(commands)
                 .filter(command -> command.getName().equals(event.getCommandName()))
                 .next()
-                .flatMap(command -> command.handle(event)
-                        .doOnError(e -> log.error("An error happened, {}", e.getMessage()))
-                        .onErrorResume(e -> command.handleError(event, e)));
-
+                .flatMap(command -> command.handle(event));
     }
 
     /**
@@ -57,7 +54,7 @@ public class SlashCommandListener {
      * @param event The autocomplete event to be handled.
      * @return The response of the handled command, or nothing if there is no command for the event.
      */
-    public Mono<Void> handle(final ChatInputAutoCompleteEvent event) {
+    Mono<Void> handle(final ChatInputAutoCompleteEvent event) {
         return Flux.fromIterable(commands)
                 .filter(command -> command.getName().equals(event.getCommandName()))
                 .next()

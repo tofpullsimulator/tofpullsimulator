@@ -25,15 +25,15 @@ public class BannerController {
 
     static final String ATTR_BANNER = "banner";
 
-    private final BannerFactory bannerFactory;
+    private final BannerFactory factory;
 
     /**
      * Create a new {@link BannerController}.
      *
-     * @param bannerFactory The factory to create new {@link Banner} instances
+     * @param factory The factory to create new {@link Banner} instances
      */
-    public BannerController(final BannerFactory bannerFactory) {
-        this.bannerFactory = bannerFactory;
+    public BannerController(final BannerFactory factory) {
+        this.factory = factory;
     }
 
     /**
@@ -51,11 +51,11 @@ public class BannerController {
         }
 
         session.setAttribute(ATTR_BANNER, null);
-        bannerFactory.setSpec(dto.getSpec());
-        bannerFactory.setRate(dto.getMode());
-        bannerFactory.setTheory(dto.isTheory());
+        factory.setSpec(dto.getSpec());
+        factory.setRate(dto.getMode());
+        factory.setTheory(dto.isTheory());
 
-        banner = bannerFactory.getObject();
+        banner = factory.getObject();
         session.setAttribute(ATTR_BANNER, banner);
 
         return BannerDto.toDto(banner);

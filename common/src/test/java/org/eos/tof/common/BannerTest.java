@@ -29,14 +29,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 class BannerTest {
 
     @Autowired
-    private BannerFactory bannerFactory;
+    private BannerFactory factory;
 
     private Banner banner;
 
     @BeforeEach
     void setUp() {
-        bannerFactory.setSpec(Banner.Spec.YULAN);
-        banner = bannerFactory.getObject();
+        factory.setSpec(Banner.Spec.YULAN);
+        banner = factory.getObject();
     }
 
     @AfterEach
@@ -58,9 +58,15 @@ class BannerTest {
 
     @Test
     void shouldThrowNPEWhenNoSpec() {
-        bannerFactory.setSpec(null);
-        var banner = bannerFactory.getObject();
+        factory.setSpec(null);
+        var banner = factory.getObject();
 
         Assertions.assertThrows(NullPointerException.class, () -> banner.pull(1));
+    }
+
+    @Test
+    void shouldGetABannerSpecFromAString() {
+        var spec = Banner.Spec.from("Yu Lan");
+        Assertions.assertEquals(Banner.Spec.YULAN, spec);
     }
 }

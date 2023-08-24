@@ -73,6 +73,10 @@ public class Banner {
         /**
          * Mimi spec.
          */
+        FEISE("Zhongrui", "Fei Se"),
+        /**
+         * Mimi spec.
+         */
         MIMI("Meng Zhang", "Mimi"),
         /**
          * Zeke spec.
@@ -142,6 +146,16 @@ public class Banner {
             this.weapon = weapon;
             this.simulacra = simulacra;
         }
+
+        /**
+         * Get a banner spec from a given name.
+         *
+         * @param name The name of the banner spec to get.
+         * @return The fetched banner spec.
+         */
+        public static Spec from(final String name) {
+            return Banner.Spec.valueOf(name.toUpperCase().replace(" ", ""));
+        }
     }
 
     private final Spec spec;
@@ -160,7 +174,7 @@ public class Banner {
      * @param amount The amount can be any positive number. if the amount is negative it will pull until there are 7
      *               banner weapons (A6).
      * @return The same instance of the banner.
-     * @throws NullPointerException if the @see #spec is null.
+     * @throws NullPointerException if the spec of the banner is null.
      */
     public Banner pull(final long amount) {
         Objects.requireNonNull(this.spec, "No spec found!");

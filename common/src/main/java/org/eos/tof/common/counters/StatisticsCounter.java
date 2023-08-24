@@ -51,6 +51,51 @@ public class StatisticsCounter implements Counter {
     private final History history;
 
     /**
+     * Get the value of {@link #SSR} from the counter.
+     *
+     * @return The value of {@link #SSR}.
+     */
+    public Integer getSSR() {
+        return get(SSR);
+    }
+
+    /**
+     * Get the value of {@link #SR} from the counter.
+     *
+     * @return The value of {@link #SR}.
+     */
+    public Integer getSR() {
+        return get(SR);
+    }
+
+    /**
+     * Get the value of {@link #R} from the counter.
+     *
+     * @return The value of {@link #R}.
+     */
+    public Integer getRare() {
+        return get(R);
+    }
+
+    /**
+     * Get the value of {@link #N} from the counter.
+     *
+     * @return The value of {@link #N}.
+     */
+    public Integer getNormal() {
+        return get(N);
+    }
+
+    /**
+     * Get the value of {@link #BANNER_WEAPON} from the counter.
+     *
+     * @return The value of {@link #BANNER_WEAPON}.
+     */
+    public Integer getWeaponBanner() {
+        return get(BANNER_WEAPON);
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override

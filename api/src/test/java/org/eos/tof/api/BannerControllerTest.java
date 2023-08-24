@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class BannerControllerTest {
 
     @Autowired
-    private BannerFactory bannerFactory;
+    private BannerFactory factory;
     @Autowired
     private MockMvc mockMvc;
 
@@ -40,7 +40,7 @@ class BannerControllerTest {
 
     @Test
     void shouldRecreate() throws Exception {
-        var banner = bannerFactory.getObject();
+        var banner = factory.getObject();
         MockHttpSession session = new MockHttpSession();
         session.setAttribute(BannerController.ATTR_BANNER, banner);
 
@@ -84,7 +84,7 @@ class BannerControllerTest {
 
     @Test
     void shouldPull() throws Exception {
-        var banner = bannerFactory.getObject();
+        var banner = factory.getObject();
         MockHttpSession session = new MockHttpSession();
         session.setAttribute(BannerController.ATTR_BANNER, banner);
 
@@ -106,7 +106,7 @@ class BannerControllerTest {
 
     @Test
     void shouldInternalErrorWhenBadAmount() throws Exception {
-        var banner = bannerFactory.getObject();
+        var banner = factory.getObject();
         MockHttpSession session = new MockHttpSession();
         session.setAttribute(BannerController.ATTR_BANNER, banner);
 

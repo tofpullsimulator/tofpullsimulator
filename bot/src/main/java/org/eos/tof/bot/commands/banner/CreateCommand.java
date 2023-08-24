@@ -26,7 +26,7 @@ import reactor.core.publisher.Mono;
 @Component
 public class CreateCommand extends AbstractBannerSubCommand implements SlashSubCommand {
 
-    private final BannerService bannerService;
+    private final BannerService service;
 
     /**
      * {@inheritDoc}
@@ -49,7 +49,7 @@ public class CreateCommand extends AbstractBannerSubCommand implements SlashSubC
         @SuppressWarnings({"java:S3655", "OptionalGetWithoutIsPresent"})
         long id = member.get().getUserData().id().asLong();
 
-        return bannerService.get(id, name, isTheory, true).flatMap(b -> {
+        return service.get(id, name, isTheory, true).flatMap(b -> {
             var spec = b.getSpec();
             return event.reply()
                     .withEphemeral(true)
@@ -73,7 +73,8 @@ public class CreateCommand extends AbstractBannerSubCommand implements SlashSubC
      * {@inheritDoc}
      */
     @Override
-    public Mono<Void> handle(final ChatInputAutoCompleteEvent event) {
+    public Mono<Void> handle(final ChatInputAutoCompleteEvent event,
+                             final ApplicationCommandInteractionOption option) {
         String focusedOption = event.getFocusedOption().getName();
         if (focusedOption.equals("name")) {
             List<ApplicationCommandOptionChoiceData> suggestions = new ArrayList<>();

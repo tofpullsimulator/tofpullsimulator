@@ -25,7 +25,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 class TokenHandlerTest {
 
     @Autowired
-    private BannerFactory bannerFactory;
+    private BannerFactory factory;
     @Autowired
     private TokenHandler handler;
 
@@ -33,8 +33,8 @@ class TokenHandlerTest {
 
     @BeforeEach
     void setUp() {
-        bannerFactory.setSpec(Banner.Spec.YULAN);
-        banner = bannerFactory.getObject();
+        factory.setSpec(Banner.Spec.YULAN);
+        banner = factory.getObject();
     }
 
     @AfterEach

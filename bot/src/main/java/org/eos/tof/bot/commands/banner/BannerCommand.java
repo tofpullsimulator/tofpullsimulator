@@ -43,7 +43,9 @@ public class BannerCommand implements SlashCommand {
         return Flux.fromIterable(event.getOptions())
                 .filter(option -> option.getType().equals(ApplicationCommandOption.Type.SUB_COMMAND))
                 .next()
-                .flatMap(option -> handle(event, option));
+                .flatMap(option -> handle(event, option))
+                .doOnError(e -> log.error("An error happened, {}", e.getMessage()))
+                .onErrorResume(e -> handleError(event, e));
     }
 
     /**
@@ -83,6 +85,6 @@ public class BannerCommand implements SlashCommand {
         return Flux.fromIterable(subCommands)
                 .filter(subCommand -> subCommand.getName().equals(getName() + " " + option.getName()))
                 .next()
-                .flatMap(subCommand -> subCommand.handle(event));
+                .flatMap(subCommand -> subCommand.handle(event, option));
     }
 }
