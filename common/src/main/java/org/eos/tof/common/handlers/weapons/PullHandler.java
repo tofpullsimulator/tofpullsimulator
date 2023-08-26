@@ -1,22 +1,24 @@
-package org.eos.tof.common.handlers;
+package org.eos.tof.common.handlers.weapons;
 
 import java.util.random.RandomGenerator;
 
 import lombok.AllArgsConstructor;
 import org.eos.tof.common.Banner;
 import org.eos.tof.common.counters.PityCounter;
+import org.eos.tof.common.handlers.Handler;
+import org.eos.tof.common.handlers.SSRareHelper;
 import org.eos.tof.common.items.Normal;
 import org.eos.tof.common.items.Rare;
 import org.eos.tof.common.items.SRare;
 import org.springframework.stereotype.Component;
 
 /**
- * Handler for processing the banner during pulling.
+ * Handler for processing the banner during pulling on weapons.
  *
  * @author Eos
  */
 @AllArgsConstructor
-@Component
+@Component("weaponPullHandler")
 public class PullHandler extends Handler {
 
     private final RandomGenerator rng;
@@ -33,13 +35,13 @@ public class PullHandler extends Handler {
      */
     @Override
     public boolean check(final Banner banner) {
-        var pity = banner.getPity();
+        var pity = banner.pity();
         if (pity.get(PityCounter.SSR) == 0 || pity.get(PityCounter.SR) == 0) {
             return checkNext(banner);
         }
 
-        var rate = banner.getRate();
-        if (rate == Banner.RateMode.NORMAL) {
+        var rate = banner.rate();
+        if (rate == Banner.RateMode.WEAPON_NORMAL) {
             return normal(banner);
         }
 
@@ -48,19 +50,19 @@ public class PullHandler extends Handler {
 
     private boolean normal(final Banner banner) {
         @SuppressWarnings("DuplicatedCode")
-        var mode = banner.getRate();
-        var history = banner.getHistory();
+        var mode = banner.rate();
+        var history = banner.history();
 
         double n = rng.nextDouble(100);
         n -= mode.getSsr();
         if (n <= 0) {
-            helper.pull(banner);
+            helper.pullWeapon(banner);
             return checkNext(banner);
         }
 
         n -= mode.getSr();
         if (n <= 0) {
-            history.add(new SRare());
+            history.add(new SRare(rng));
             return checkNext(banner);
         }
 
@@ -72,22 +74,22 @@ public class PullHandler extends Handler {
 
         n -= mode.getR();
         if (n <= 0) {
-            history.add(new Rare());
+            history.add(new Rare(rng));
             return checkNext(banner);
         }
 
         return false;
     }
 
+    @SuppressWarnings("DuplicatedCode")
     private boolean guarantee(final Banner banner) {
-        @SuppressWarnings("DuplicatedCode")
-        var mode = banner.getRate();
-        var history = banner.getHistory();
+        var mode = banner.rate();
+        var history = banner.history();
 
         double n = rng.nextDouble(100);
         n -= mode.getSsr();
         if (n <= 0) {
-            helper.pull(banner);
+            helper.pullWeapon(banner);
             return checkNext(banner);
         }
 
@@ -99,17 +101,16 @@ public class PullHandler extends Handler {
 
         n -= mode.getSr();
         if (n <= 0) {
-            history.add(new SRare());
+            history.add(new SRare(rng));
             return checkNext(banner);
         }
 
         n -= mode.getR();
         if (n <= 0) {
-            history.add(new Rare());
+            history.add(new Rare(rng));
             return checkNext(banner);
         }
 
         return false;
     }
 }
-

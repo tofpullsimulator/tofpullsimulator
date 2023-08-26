@@ -4,12 +4,14 @@ import discord4j.core.event.domain.interaction.ChatInputAutoCompleteEvent;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
 import discord4j.core.object.command.ApplicationCommandInteractionOption;
 import discord4j.core.object.command.ApplicationCommandInteractionOptionValue;
+import discord4j.core.spec.EmbedCreateSpec;
 import discord4j.core.spec.InteractionApplicationCommandCallbackReplyMono;
 
 import java.util.Optional;
 
 import org.eos.tof.bot.BannerService;
 import org.eos.tof.common.Banner;
+import org.eos.tof.common.MatrixBanner;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,13 +30,13 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest(classes = {CreateCommand.class, BannerService.class})
+@SpringBootTest(classes = {PullMatrixCommand.class, CreateMatrixCommand.class, BannerService.class})
 @ComponentScan(basePackages = {"org.eos.tof.common"})
 @EnableAutoConfiguration
-class CreateCommandTest {
+class PullMatrixCommandTest {
 
     @Autowired
-    private CreateCommand command;
+    private PullMatrixCommand command;
     @Autowired
     private BannerService service;
 
@@ -46,30 +48,78 @@ class CreateCommandTest {
     private ChatInputAutoCompleteEvent autoCompleteEvent;
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private ApplicationCommandInteractionOption option;
+
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-    private ApplicationCommandInteractionOptionValue value;
+    private ApplicationCommandInteractionOption amount;
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+    private ApplicationCommandInteractionOptionValue amountValue;
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+    private ApplicationCommandInteractionOption name;
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+    private ApplicationCommandInteractionOptionValue nameValue;
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+    private ApplicationCommandInteractionOption theory;
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+    private ApplicationCommandInteractionOptionValue theoryValue;
 
     @BeforeEach
     void setUp() {
+        service.reset(0L).block();
+
         when(reply.withEphemeral(anyBoolean())).thenReturn(reply);
         when(reply.withContent(anyString())).thenReturn(reply);
+        when(reply.withEmbeds(any(EmbedCreateSpec.class))).thenReturn(reply);
         when(reply.then()).thenReturn(Mono.empty());
-        when(option.getOption(anyString())).thenReturn(Optional.of(option));
-        when(option.getValue()).thenReturn(Optional.of(value));
+        when(option.getOption("amount")).thenReturn(Optional.of(amount));
+        when(option.getOption("name")).thenReturn(Optional.of(name));
+        when(option.getOption("theory")).thenReturn(Optional.of(theory));
         when(interactionEvent.reply()).thenReturn(reply);
     }
 
     @Test
     void shouldGetTheNameOfTheCommand() {
-        Assertions.assertEquals("banner create", command.getName());
+        Assertions.assertEquals("banner pull-matrix", command.getName());
     }
 
     @Test
     void shouldHandleInteractionEvent() {
+        when(amountValue.asLong()).thenReturn(1L);
+        when(amount.getValue()).thenReturn(Optional.of(amountValue));
+        when(nameValue.asString()).thenReturn("Yu Lan");
+        when(name.getValue()).thenReturn(Optional.of(nameValue));
+        when(theoryValue.asBoolean()).thenReturn(false);
+        when(theory.getValue()).thenReturn(Optional.of(theoryValue));
+
         command.handle(interactionEvent, option).block();
+
         var mono = service.get(0L);
         StepVerifier.create(mono)
-                .assertNext(it -> Assertions.assertEquals(Banner.Spec.ZEKE, it.getSpec()))
+                .assertNext(it -> {
+                    Assertions.assertEquals(Banner.Spec.YULAN, it.spec());
+                    Assertions.assertEquals(1, it.pity().getSSR());
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldHandleInteractionEventAlreadyExistingBanner() {
+        service.pull(0L, "Yu Lan", false, 10, MatrixBanner.class).block();
+
+        when(amountValue.asLong()).thenReturn(1L);
+        when(amount.getValue()).thenReturn(Optional.of(amountValue));
+        when(nameValue.asString()).thenReturn(null);
+        when(name.getValue()).thenReturn(Optional.of(nameValue));
+        when(theoryValue.asBoolean()).thenReturn(false);
+        when(theory.getValue()).thenReturn(Optional.of(theoryValue));
+
+        command.handle(interactionEvent, option).block();
+
+        var mono = service.get(0L);
+        StepVerifier.create(mono)
+                .assertNext(it -> {
+                    Assertions.assertEquals(Banner.Spec.YULAN, it.spec());
+                    Assertions.assertEquals(11, it.pity().getSSR());
+                })
                 .verifyComplete();
     }
 
@@ -82,7 +132,7 @@ class CreateCommandTest {
     @Test
     void shouldHandleAutoCompleteEvent() {
         var focusedOption = mock(ApplicationCommandInteractionOption.class);
-        when(focusedOption.getName()).thenReturn("name");
+        when(focusedOption.getName()).thenReturn("amount");
         when(autoCompleteEvent.getFocusedOption()).thenReturn(focusedOption);
         when(autoCompleteEvent.respondWithSuggestions(any())).thenReturn(Mono.empty());
 

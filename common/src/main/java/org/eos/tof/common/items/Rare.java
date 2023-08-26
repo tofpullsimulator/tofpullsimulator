@@ -1,8 +1,7 @@
 package org.eos.tof.common.items;
 
-import java.util.Random;
-import java.util.Set;
 import java.util.random.RandomGenerator;
+import java.util.Set;
 
 import lombok.Getter;
 
@@ -18,13 +17,6 @@ public class Rare implements Item {
     private static final String[] OPTIONS_LIST = OPTIONS.toArray(String[]::new);
 
     private final String name;
-
-    /**
-     * Create a new rare rarity item.
-     */
-    public Rare() {
-        this(new Random());
-    }
 
     /**
      * Create a new rare rarity item.

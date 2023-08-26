@@ -1,5 +1,7 @@
 package org.eos.tof.common.counters;
 
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import lombok.AllArgsConstructor;
@@ -9,7 +11,7 @@ import org.eos.tof.common.items.SSRare;
 import org.springframework.stereotype.Component;
 
 /**
- * Counter object for handling tokens (black gold).
+ * Counter object for handling tokens (flame gold).
  *
  * @author Eos
  */
@@ -17,15 +19,101 @@ import org.springframework.stereotype.Component;
 @Component(value = "tokens")
 public class TokenCounter implements Counter {
 
-    private final AtomicInteger store = new AtomicInteger(0);
+    /**
+     * Metric name for matrix tokens in the banner.
+     */
+    public static final String MATRIX_TOKENS = "matrix_tokens";
+    /**
+     * Metric name for the amount of brain pieces to buy with tokens in the banner.
+     */
+    public static final String BUY_BRAIN_PIECES = "buy_brain_pieces";
+    /**
+     * Metric name for the amount of hands pieces to buy with tokens in the banner.
+     */
+    public static final String BUY_HANDS_PIECES = "buy_hands_pieces";
+    /**
+     * Metric name for the amount of head pieces to buy with tokens in the banner.
+     */
+    public static final String BUY_HEAD_PIECES = "buy_head_pieces";
+    /**
+     * Metric name for the amount of heart pieces to buy with tokens in the banner.
+     */
+    public static final String BUY_HEART_PIECES = "buy_heart_pieces";
+    /**
+     * Metric name for weapon tokens in the banner.
+     */
+    public static final String WEAPON_TOKENS = "weapon_tokens";
+
+    private final Map<String, AtomicInteger> store = Map.ofEntries(
+            Map.entry(MATRIX_TOKENS, new AtomicInteger(0)),
+            Map.entry(BUY_BRAIN_PIECES, new AtomicInteger(0)),
+            Map.entry(BUY_HANDS_PIECES, new AtomicInteger(0)),
+            Map.entry(BUY_HEAD_PIECES, new AtomicInteger(0)),
+            Map.entry(BUY_HEART_PIECES, new AtomicInteger(0)),
+            Map.entry(WEAPON_TOKENS, new AtomicInteger(0))
+    );
     private final History history;
+
+    /**
+     * Get the value of {@link #MATRIX_TOKENS} from the counter.
+     *
+     * @return The value of {@link #MATRIX_TOKENS}.
+     */
+    public Integer getMatrixTokens() {
+        return get(MATRIX_TOKENS);
+    }
+
+    /**
+     * Get the value of {@link #BUY_BRAIN_PIECES} from the counter.
+     *
+     * @return The value of {@link #BUY_BRAIN_PIECES}.
+     */
+    public Integer getBuyBrainPieces() {
+        return get(BUY_BRAIN_PIECES);
+    }
+
+    /**
+     * Get the value of {@link #BUY_HANDS_PIECES} from the counter.
+     *
+     * @return The value of {@link #BUY_HANDS_PIECES}.
+     */
+    public Integer getBuyHandsPieces() {
+        return get(BUY_HANDS_PIECES);
+    }
+
+    /**
+     * Get the value of {@link #BUY_HEAD_PIECES} from the counter.
+     *
+     * @return The value of {@link #BUY_HEAD_PIECES}.
+     */
+    public Integer getBuyHeadPieces() {
+        return get(BUY_HEAD_PIECES);
+    }
+
+    /**
+     * Get the value of {@link #BUY_HEART_PIECES} from the counter.
+     *
+     * @return The value of {@link #BUY_HEART_PIECES}.
+     */
+    public Integer getBuyHeartPieces() {
+        return get(BUY_HEART_PIECES);
+    }
+
+    /**
+     * Get the value of {@link #WEAPON_TOKENS} from the counter.
+     *
+     * @return The value of {@link #WEAPON_TOKENS}.
+     */
+    public Integer getWeaponTokens() {
+        return get(WEAPON_TOKENS);
+    }
 
     /**
      * {@inheritDoc}
      */
     @Override
     public Integer get(final String metricName) {
-        return store.get();
+        return store.get(metricName).get();
     }
 
     /**
@@ -33,7 +121,15 @@ public class TokenCounter implements Counter {
      */
     @Override
     public void set(final String metricName, final int newValue) {
-        store.set(newValue);
+        store.get(metricName).set(newValue);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void increment() {
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -44,6 +140,11 @@ public class TokenCounter implements Counter {
      */
     @Override
     public void increment(final String metricName) {
+        if (Objects.equals(metricName, MATRIX_TOKENS)) {
+            set(MATRIX_TOKENS, store.get(MATRIX_TOKENS).get() + 1);
+            return;
+        }
+
         var last = history.getLast();
         int amount = 1;
         if (last instanceof SRare) {
@@ -52,14 +153,24 @@ public class TokenCounter implements Counter {
             amount = item.isStandard() ? 10 : 0;
         }
 
-        set(store.get() + amount);
+        set(WEAPON_TOKENS, store.get(WEAPON_TOKENS).get() + amount);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void reset(final String metricName) {
-        store.set(0);
+    public void reset(String metricName) {
+        store.get(metricName).set(0);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void reset() {
+        for (String key : store.keySet()) {
+            reset(key);
+        }
     }
 }

@@ -1,33 +1,46 @@
-package org.eos.tof.common.handlers;
+package org.eos.tof.common.handlers.weapons;
+
+import java.util.random.RandomGenerator;
 
 import org.eos.tof.common.Banner;
 import org.eos.tof.common.BannerFactory;
 import org.eos.tof.common.counters.PityCounter;
 import org.eos.tof.common.counters.StatisticsCounter;
 import org.eos.tof.common.counters.TokenCounter;
+import org.eos.tof.common.handlers.matrices.MatrixHandlers;
+import org.eos.tof.common.handlers.SSRareHelper;
 import org.eos.tof.common.History;
-import org.eos.tof.common.items.Normal;
+import org.eos.tof.common.items.Rare;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 @SpringBootTest(classes = {
         BannerFactory.class,
         History.class,
+        MatrixHandlers.class,
         PityCounter.class,
+        SSRareHelper.class,
         StatisticsCounter.class,
         TokenCounter.class,
-        TokenHandler.class
+        TokenHandler.class,
+        WeaponHandlers.class
 })
 class TokenHandlerTest {
 
     @Autowired
     private BannerFactory factory;
     @Autowired
+    @Qualifier(value = "weaponTokenHandler")
     private TokenHandler handler;
+
+    @MockBean
+    private RandomGenerator rng;
 
     private Banner banner;
 
@@ -35,6 +48,7 @@ class TokenHandlerTest {
     void setUp() {
         factory.setSpec(Banner.Spec.YULAN);
         banner = factory.getObject();
+        handler.setNext(null);
     }
 
     @AfterEach
@@ -44,24 +58,24 @@ class TokenHandlerTest {
 
     @Test
     void shouldIncrementStatisticsAndTokens() {
-        banner.getHistory().add(new Normal());
+        banner.history().add(new Rare(rng));
 
         var result = handler.check(banner);
         Assertions.assertTrue(result);
 
-        Assertions.assertEquals(1, banner.getStatistics().get(StatisticsCounter.N));
-        Assertions.assertEquals(1, banner.getTokens().get());
+        Assertions.assertEquals(1, banner.statistics().getRare());
+        Assertions.assertEquals(1, banner.tokens().getWeaponTokens());
     }
 
     @Test
     void shouldResetTokensWhenSSRCanBeBought() {
-        banner.getHistory().add(new Normal());
-        banner.getTokens().set(119);
+        banner.history().add(new Rare(rng));
+        banner.tokens().set(TokenCounter.WEAPON_TOKENS, 119);
 
         var result = handler.check(banner);
         Assertions.assertTrue(result);
 
-        Assertions.assertEquals(1, banner.getStatistics().get(StatisticsCounter.N));
-        Assertions.assertEquals(0, banner.getTokens().get());
+        Assertions.assertEquals(1, banner.statistics().getRare());
+        Assertions.assertEquals(0, banner.tokens().getWeaponTokens());
     }
 }

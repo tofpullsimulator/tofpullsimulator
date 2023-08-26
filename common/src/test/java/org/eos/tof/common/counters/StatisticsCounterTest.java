@@ -1,6 +1,7 @@
 package org.eos.tof.common.counters;
 
 import java.lang.reflect.Constructor;
+import java.util.random.RandomGenerator;
 
 import org.eos.tof.common.History;
 import org.eos.tof.common.items.Item;
@@ -15,6 +16,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import static org.mockito.Mockito.mock;
 
@@ -25,6 +27,9 @@ class StatisticsCounterTest {
     private History history;
     @Autowired
     private StatisticsCounter statistics;
+
+    @MockBean
+    private RandomGenerator rng;
 
     @AfterEach
     void tearDown() {
@@ -63,20 +68,52 @@ class StatisticsCounterTest {
     }
 
     @Test
-    void shouldThrowExceptionWhenGettingWithoutMetricName() {
-        Assertions.assertThrows(UnsupportedOperationException.class,
-                () -> statistics.get());
+    void shouldGetValueOfTotalMatrixPiecesCounter() {
+        statistics.set(StatisticsCounter.TOTAL_MATRIX_PIECES, 1);
+        Assertions.assertEquals(1, statistics.getTotalMatrixPieces());
     }
 
-    @ValueSource(classes = {Normal.class, Rare.class, SRare.class, SSRare.class})
+    @Test
+    void shouldGetValueOfBrainPiecesCounter() {
+        statistics.set(StatisticsCounter.BRAIN_PIECES, 1);
+        Assertions.assertEquals(1, statistics.getBrainPieces());
+    }
+
+    @Test
+    void shouldGetValueOfHandPiecesCounter() {
+        statistics.set(StatisticsCounter.HANDS_PIECES, 1);
+        Assertions.assertEquals(1, statistics.getHandsPieces());
+    }
+
+    @Test
+    void shouldGetValueOfHeadPiecesCounter() {
+        statistics.set(StatisticsCounter.HEAD_PIECES, 1);
+        Assertions.assertEquals(1, statistics.getHeadPieces());
+    }
+
+    @Test
+    void shouldGetValueOfHeartPiecesCounter() {
+        statistics.set(StatisticsCounter.HEART_PIECES, 1);
+        Assertions.assertEquals(1, statistics.getHeartPieces());
+    }
+
+    @ValueSource(classes = {Rare.class, SRare.class, SSRare.class})
     @ParameterizedTest
     void shouldIncrementBothSSRAndSR(final Class<?> clazz) throws Exception {
-        Constructor<?> ctor = clazz.getConstructor();
-        Item object = (Item) ctor.newInstance();
+        Constructor<?> ctor = clazz.getConstructor(RandomGenerator.class);
+        Item object = (Item) ctor.newInstance(rng);
         history.add(object);
 
         statistics.increment();
         Assertions.assertEquals(1, statistics.get(clazz.getSimpleName()));
+    }
+
+    @Test
+    void shouldIncrementBothSSRAndSROnNormal() {
+        history.add(new Normal());
+
+        statistics.increment();
+        Assertions.assertEquals(1, statistics.getNormal());
     }
 
     @Test
@@ -85,10 +122,10 @@ class StatisticsCounterTest {
         history.add(object);
 
         statistics.increment();
-        Assertions.assertEquals(0, statistics.get(StatisticsCounter.SSR));
-        Assertions.assertEquals(0, statistics.get(StatisticsCounter.SR));
-        Assertions.assertEquals(0, statistics.get(StatisticsCounter.R));
-        Assertions.assertEquals(0, statistics.get(StatisticsCounter.N));
+        Assertions.assertEquals(0, statistics.getSSR());
+        Assertions.assertEquals(0, statistics.getSR());
+        Assertions.assertEquals(0, statistics.getRare());
+        Assertions.assertEquals(0, statistics.getNormal());
     }
 
     @Test
@@ -97,7 +134,7 @@ class StatisticsCounterTest {
         statistics.set(StatisticsCounter.SSR, 10);
 
         statistics.reset();
-        Assertions.assertEquals(0, statistics.get(StatisticsCounter.SR));
-        Assertions.assertEquals(0, statistics.get(StatisticsCounter.SSR));
+        Assertions.assertEquals(0, statistics.getSR());
+        Assertions.assertEquals(0, statistics.getSSR());
     }
 }

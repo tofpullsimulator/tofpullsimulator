@@ -5,10 +5,9 @@ import java.util.stream.Stream;
 import org.eos.tof.common.counters.PityCounter;
 import org.eos.tof.common.counters.StatisticsCounter;
 import org.eos.tof.common.counters.TokenCounter;
-import org.eos.tof.common.handlers.PityHandler;
-import org.eos.tof.common.handlers.PullHandler;
+import org.eos.tof.common.handlers.matrices.MatrixHandlers;
 import org.eos.tof.common.handlers.SSRareHelper;
-import org.eos.tof.common.handlers.TokenHandler;
+import org.eos.tof.common.handlers.weapons.WeaponHandlers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -20,13 +19,12 @@ import org.springframework.boot.test.context.SpringBootTest;
         BannerFactory.class,
         Config.class,
         History.class,
+        MatrixHandlers.class,
         PityCounter.class,
-        PityHandler.class,
-        PullHandler.class,
         SSRareHelper.class,
         StatisticsCounter.class,
         TokenCounter.class,
-        TokenHandler.class,
+        WeaponHandlers.class
 })
 class BannerFactoryTest {
 
@@ -35,25 +33,30 @@ class BannerFactoryTest {
 
     @MethodSource("arguments")
     @ParameterizedTest
-    void shouldCreateBanners(final Banner.RateMode rate, final boolean isTheory) {
+    void shouldCreateBanners(final Class<? extends Banner> clazz, final Banner.RateMode rate, final boolean isTheory) {
         factory.setSpec(Banner.Spec.YULAN);
+        factory.setClazz(clazz);
         factory.setRate(rate);
         factory.setTheory(isTheory);
 
         var banner = factory.getObject();
 
-        Assertions.assertInstanceOf(Banner.class, banner);
-        Assertions.assertEquals(Banner.Spec.YULAN, banner.getSpec());
-        Assertions.assertEquals(rate, banner.getRate());
-        Assertions.assertEquals(isTheory, banner.isTheory());
+        Assertions.assertInstanceOf(clazz, banner);
+        Assertions.assertEquals(Banner.Spec.YULAN, banner.spec());
+        Assertions.assertEquals(rate, banner.rate());
+        Assertions.assertEquals(isTheory, banner.theory());
     }
 
     private static Stream<Arguments> arguments() {
         return Stream.of(
-                Arguments.of(Banner.RateMode.NORMAL, true),
-                Arguments.of(Banner.RateMode.NORMAL, false),
-                Arguments.of(Banner.RateMode.GUARANTEE, true),
-                Arguments.of(Banner.RateMode.GUARANTEE, false)
+                Arguments.of(WeaponBanner.class, Banner.RateMode.WEAPON_NORMAL, true),
+                Arguments.of(WeaponBanner.class, Banner.RateMode.WEAPON_NORMAL, false),
+                Arguments.of(WeaponBanner.class, Banner.RateMode.WEAPON_GUARANTEE, true),
+                Arguments.of(WeaponBanner.class, Banner.RateMode.WEAPON_GUARANTEE, false),
+                Arguments.of(MatrixBanner.class, Banner.RateMode.WEAPON_NORMAL, true),
+                Arguments.of(MatrixBanner.class, Banner.RateMode.WEAPON_NORMAL, false),
+                Arguments.of(MatrixBanner.class, Banner.RateMode.WEAPON_GUARANTEE, true),
+                Arguments.of(MatrixBanner.class, Banner.RateMode.WEAPON_GUARANTEE, false)
         );
     }
 }

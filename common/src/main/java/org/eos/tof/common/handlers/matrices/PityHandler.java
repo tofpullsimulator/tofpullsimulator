@@ -1,20 +1,25 @@
-package org.eos.tof.common.handlers;
+package org.eos.tof.common.handlers.matrices;
+
+import java.util.random.RandomGenerator;
 
 import lombok.AllArgsConstructor;
 import org.eos.tof.common.Banner;
 import org.eos.tof.common.counters.PityCounter;
+import org.eos.tof.common.handlers.Handler;
+import org.eos.tof.common.handlers.SSRareHelper;
 import org.eos.tof.common.items.SRare;
 import org.springframework.stereotype.Component;
 
 /**
- * Handler for processing the banner before pulling.
+ * Handler for processing the banner before pulling on matrices.
  *
  * @author Eos
  */
 @AllArgsConstructor
-@Component
+@Component("matrixPityHandler")
 public class PityHandler extends Handler {
 
+    private final RandomGenerator rng;
     private final SSRareHelper helper;
 
     /**
@@ -31,19 +36,18 @@ public class PityHandler extends Handler {
      */
     @Override
     public boolean check(final Banner banner) {
-        var pity = banner.getPity();
+        var pity = banner.pity();
         pity.increment();
 
-        if (pity.isSsrPity()) {
+        if (pity.isSsrMatrixPity()) {
             pity.reset(PityCounter.SSR);
             pity.increment(PityCounter.HIT);
-            helper.pull(banner);
-        } else if (pity.isSrPity()) {
+            helper.pullMatrix(banner);
+        } else if (pity.isSrMatrixPity()) {
             pity.reset(PityCounter.SR);
-            banner.getHistory().add(new SRare());
+            banner.history().add(new SRare(rng));
         }
 
         return checkNext(banner);
     }
 }
-

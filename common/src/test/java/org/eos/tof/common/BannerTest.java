@@ -3,65 +3,98 @@ package org.eos.tof.common;
 import org.eos.tof.common.counters.PityCounter;
 import org.eos.tof.common.counters.StatisticsCounter;
 import org.eos.tof.common.counters.TokenCounter;
-import org.eos.tof.common.handlers.PityHandler;
-import org.eos.tof.common.handlers.PullHandler;
-import org.eos.tof.common.handlers.SSRareHelper;
-import org.eos.tof.common.handlers.TokenHandler;
-import org.junit.jupiter.api.AfterEach;
+import org.eos.tof.common.handlers.Handler;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.Spy;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
-@SpringBootTest(classes = {
-        BannerFactory.class,
-        Config.class,
-        History.class,
-        PityCounter.class,
-        PityHandler.class,
-        PullHandler.class,
-        SSRareHelper.class,
-        StatisticsCounter.class,
-        TokenCounter.class,
-        TokenHandler.class,
-})
+import static org.mockito.Mockito.verify;
+
+@SpringBootTest(classes = {Config.class})
 class BannerTest {
 
-    @Autowired
-    private BannerFactory factory;
+    @MockBean
+    private History history;
+    @MockBean
+    private PityCounter pity;
+    @MockBean
+    private StatisticsCounter statistics;
+    @MockBean
+    private TokenCounter tokens;
+    @MockBean
+    private Handler weaponHandlers;
 
-    private Banner banner;
+    @Spy
+    private final Banner banner = new Banner(Banner.Spec.YULAN) {
+
+        @Override
+        public Banner pull(long amount) {
+            return this;
+        }
+    };
 
     @BeforeEach
     void setUp() {
-        factory.setSpec(Banner.Spec.YULAN);
-        banner = factory.getObject();
+        banner.rate(Banner.RateMode.WEAPON_NORMAL);
+        banner.theory(true);
+        banner.history(history);
+        banner.pity(pity);
+        banner.statistics(statistics);
+        banner.tokens(tokens);
+        banner.handlers(weaponHandlers);
     }
 
-    @AfterEach
-    void tearDown() {
+    @Test
+    void shouldReset() {
         banner.reset();
+
+        verify(history).reset();
+        verify(pity).reset();
+        verify(statistics).reset();
+        verify(tokens).reset();
     }
 
     @Test
-    void shouldPullTen() {
-        banner.pull(10);
-        Assertions.assertEquals(10, banner.getHistory().get().size());
+    void shouldGetSpec() {
+        Assertions.assertEquals(Banner.Spec.YULAN, banner.spec());
     }
 
     @Test
-    void shouldPullToMax() {
-        banner.pull(-1);
-        Assertions.assertEquals(7, banner.getStatistics().get(StatisticsCounter.BANNER_WEAPON));
+    void shouldGetRate() {
+        Assertions.assertEquals(Banner.RateMode.WEAPON_NORMAL, banner.rate());
     }
 
     @Test
-    void shouldThrowNPEWhenNoSpec() {
-        factory.setSpec(null);
-        var banner = factory.getObject();
+    void shouldGetTheory() {
+        Assertions.assertTrue(banner.theory());
+    }
 
-        Assertions.assertThrows(NullPointerException.class, () -> banner.pull(1));
+    @Test
+    void shouldGetHistory() {
+        Assertions.assertEquals(history, banner.history());
+    }
+
+    @Test
+    void shouldGetPity() {
+        Assertions.assertEquals(pity, banner.pity());
+    }
+
+    @Test
+    void shouldGetStatistics() {
+        Assertions.assertEquals(statistics, banner.statistics());
+    }
+
+    @Test
+    void shouldGetTokens() {
+        Assertions.assertEquals(tokens, banner.tokens());
+    }
+
+    @Test
+    void shouldGetHandlers() {
+        Assertions.assertEquals(weaponHandlers, banner.handlers());
     }
 
     @Test
@@ -70,3 +103,4 @@ class BannerTest {
         Assertions.assertEquals(Banner.Spec.YULAN, spec);
     }
 }
+

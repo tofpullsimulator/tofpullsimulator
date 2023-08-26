@@ -3,8 +3,27 @@
   "description": "Banner",
   "options": [
     {
-      "name": "create",
-      "description": "Create a new banner",
+      "name": "create-matrix",
+      "description": "Create a new matrix banner",
+      "type": 1,
+      "options": [
+        {
+          "name": "name",
+          "description": "Matrix name",
+          "type": 3,
+          "required": true,
+          "autocomplete": true
+        },
+        {
+          "name": "theory",
+          "description": "Use 50/50 theory",
+          "type": 5
+        }
+      ]
+    },
+    {
+      "name": "create-weapon",
+      "description": "Create a new weapon banner",
       "type": 1,
       "options": [
         {
@@ -22,8 +41,33 @@
       ]
     },
     {
-      "name": "pull",
-      "description": "Pull on the banner",
+      "name": "pull-matrix",
+      "description": "Pull on the matrix banner",
+      "type": 1,
+      "options": [
+        {
+          "name": "amount",
+          "description": "Pull amount",
+          "type": 4,
+          "required": true,
+          "autocomplete": true
+        },
+        {
+          "name": "name",
+          "description": "Matrix name",
+          "type": 3,
+          "autocomplete": true
+        },
+        {
+          "name": "theory",
+          "description": "Use 50/50 theory",
+          "type": 5
+        }
+      ]
+    },
+    {
+      "name": "pull-weapon",
+      "description": "Pull on the weapon banner",
       "type": 1,
       "options": [
         {

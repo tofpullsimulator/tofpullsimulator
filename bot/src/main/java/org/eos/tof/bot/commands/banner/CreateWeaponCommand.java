@@ -14,26 +14,30 @@ import lombok.AllArgsConstructor;
 import org.eos.tof.bot.BannerService;
 import org.eos.tof.bot.commands.SlashSubCommand;
 import org.eos.tof.common.Banner;
+import org.eos.tof.common.WeaponBanner;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 /**
- * Command for creating a new banner for the member.
+ * Command for creating a weapon new banner for the member.
  *
  * @author Eos
  */
 @AllArgsConstructor
 @Component
-public class CreateCommand extends AbstractBannerSubCommand implements SlashSubCommand {
+public class CreateWeaponCommand extends AbstractBannerSubCommand implements SlashSubCommand {
 
-    private final BannerService service;
+    /**
+     * The banner service to create weapon banners with.
+     */
+    protected final BannerService service;
 
     /**
      * {@inheritDoc}
      */
     @Override
     public String getName() {
-        return "banner create";
+        return "banner create-weapon";
     }
 
     /**
@@ -49,11 +53,11 @@ public class CreateCommand extends AbstractBannerSubCommand implements SlashSubC
         @SuppressWarnings({"java:S3655", "OptionalGetWithoutIsPresent"})
         long id = member.get().getUserData().id().asLong();
 
-        return service.get(id, name, isTheory, true).flatMap(b -> {
-            var spec = b.getSpec();
+        return service.get(id, name, isTheory, true, WeaponBanner.class).flatMap(b -> {
+            var spec = b.spec();
             return event.reply()
                     .withEphemeral(true)
-                    .withContent("Created banner '" + spec.getSimulacra() + " (" + spec.getWeapon() + ")'")
+                    .withContent("Created weapon banner '" + spec.getSimulacra() + " (" + spec.getWeapon() + ")'")
                     .then();
         });
     }
@@ -80,7 +84,7 @@ public class CreateCommand extends AbstractBannerSubCommand implements SlashSubC
             List<ApplicationCommandOptionChoiceData> suggestions = new ArrayList<>();
             for (Banner.Spec spec : Banner.Spec.values()) {
                 var choice = ApplicationCommandOptionChoiceData.builder()
-                        .name(spec.getSimulacra() + " (" + spec.getWeapon() + ")")
+                        .name(spec.getSimulacra() + " (" + spec.getWeapon() + " / " + spec.getMatrix() + ")")
                         .value(spec.getSimulacra())
                         .build();
                 suggestions.add(choice);

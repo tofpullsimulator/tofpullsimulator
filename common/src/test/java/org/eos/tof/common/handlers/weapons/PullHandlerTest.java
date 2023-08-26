@@ -1,4 +1,4 @@
-package org.eos.tof.common.handlers;
+package org.eos.tof.common.handlers.weapons;
 
 import java.util.random.RandomGenerator;
 
@@ -7,6 +7,8 @@ import org.eos.tof.common.BannerFactory;
 import org.eos.tof.common.counters.PityCounter;
 import org.eos.tof.common.counters.StatisticsCounter;
 import org.eos.tof.common.counters.TokenCounter;
+import org.eos.tof.common.handlers.matrices.MatrixHandlers;
+import org.eos.tof.common.handlers.SSRareHelper;
 import org.eos.tof.common.History;
 import org.eos.tof.common.items.Normal;
 import org.eos.tof.common.items.Rare;
@@ -19,6 +21,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
@@ -27,28 +30,31 @@ import static org.mockito.Mockito.when;
 @SpringBootTest(classes = {
         BannerFactory.class,
         History.class,
+        MatrixHandlers.class,
         PityCounter.class,
         PullHandler.class,
         SSRareHelper.class,
         StatisticsCounter.class,
-        TokenCounter.class
+        TokenCounter.class,
+        WeaponHandlers.class
 })
 class PullHandlerTest {
-
-    @MockBean
-    private RandomGenerator rng;
 
     @Autowired
     private BannerFactory factory;
     @Autowired
+    @Qualifier(value = "weaponPullHandler")
     private PullHandler handler;
+
+    @MockBean
+    private RandomGenerator rng;
 
     private Banner banner;
 
     @BeforeEach
     void setUp() {
         factory.setSpec(Banner.Spec.YULAN);
-        banner = factory.getObject();
+        handler.setNext(null);
     }
 
     @AfterEach
@@ -59,80 +65,91 @@ class PullHandlerTest {
     @ValueSource(strings = {PityCounter.SSR, PityCounter.SR})
     @ParameterizedTest
     void shouldSkipIfPityOrGuaranteeIsHit(final String metricName) {
-        banner.getPity().set(PityCounter.SSR, 1);
-        banner.getPity().set(PityCounter.SR, 1);
-        banner.getPity().set(metricName, 0);
+        banner = factory.getObject();
+        banner.pity().set(PityCounter.SSR, 1);
+        banner.pity().set(PityCounter.SR, 1);
+        banner.pity().set(metricName, 0);
 
         var result = handler.check(banner);
         Assertions.assertTrue(result);
-        Assertions.assertTrue(banner.getHistory().get().isEmpty());
+        Assertions.assertTrue(banner.history().get().isEmpty());
     }
 
-    @EnumSource(Banner.RateMode.class)
+    @EnumSource(value = Banner.RateMode.class, names = {"WEAPON_GUARANTEE", "WEAPON_NORMAL"})
     @ParameterizedTest
     void shouldPullAnSSRare(final Banner.RateMode rate) {
-        banner.setRate(rate);
-        banner.getPity().increment();
-        when(rng.nextDouble(100)).thenReturn(banner.getRate().getSsr());
+        factory.setRate(rate);
+        banner = factory.getObject();
+
+        banner.pity().increment();
+        when(rng.nextDouble(100)).thenReturn(banner.rate().getSsr());
 
         var result = handler.check(banner);
         Assertions.assertTrue(result);
 
-        var last = banner.getHistory().getLast();
+        var last = banner.history().getLast();
         Assertions.assertInstanceOf(SSRare.class, last);
     }
 
-    @EnumSource(Banner.RateMode.class)
+    @EnumSource(value = Banner.RateMode.class, names = {"WEAPON_GUARANTEE", "WEAPON_NORMAL"})
     @ParameterizedTest
     void shouldPullAnSRare(final Banner.RateMode rate) {
-        banner.setRate(rate);
-        banner.getPity().increment();
-        when(rng.nextDouble(100)).thenReturn(banner.getRate().getSr());
+        factory.setRate(rate);
+        banner = factory.getObject();
+
+        banner.pity().increment();
+        when(rng.nextDouble(100)).thenReturn(banner.rate().getSr());
 
         var result = handler.check(banner);
         Assertions.assertTrue(result);
 
-        var last = banner.getHistory().getLast();
+        var last = banner.history().getLast();
         Assertions.assertInstanceOf(SRare.class, last);
     }
 
-    @EnumSource(Banner.RateMode.class)
+    @EnumSource(value = Banner.RateMode.class, names = {"WEAPON_GUARANTEE", "WEAPON_NORMAL"})
     @ParameterizedTest
     void shouldPullAnRare(final Banner.RateMode rate) {
-        banner.setRate(rate);
-        banner.getPity().increment();
-        when(rng.nextDouble(100)).thenReturn(banner.getRate().getR());
+        factory.setRate(rate);
+        banner = factory.getObject();
+
+        banner.pity().increment();
+        when(rng.nextDouble(100)).thenReturn(banner.rate().getR());
 
         var result = handler.check(banner);
         Assertions.assertTrue(result);
 
-        var last = banner.getHistory().getLast();
+        var last = banner.history().getLast();
         Assertions.assertInstanceOf(Rare.class, last);
     }
 
-    @EnumSource(Banner.RateMode.class)
+    @EnumSource(value = Banner.RateMode.class, names = {"WEAPON_GUARANTEE", "WEAPON_NORMAL"})
     @ParameterizedTest
     void shouldPullANormal(final Banner.RateMode rate) {
-        banner.setRate(rate);
-        banner.getPity().increment();
-        when(rng.nextDouble(100)).thenReturn(banner.getRate().getN());
+        factory.setRate(rate);
+        banner = factory.getObject();
+
+        banner.pity().increment();
+        when(rng.nextDouble(100)).thenReturn(banner.rate().getN());
 
         var result = handler.check(banner);
         Assertions.assertTrue(result);
 
-        var last = banner.getHistory().getLast();
+        var last = banner.history().getLast();
         Assertions.assertInstanceOf(Normal.class, last);
     }
 
-    @EnumSource(Banner.RateMode.class)
+    @EnumSource(value = Banner.RateMode.class, names = {"WEAPON_GUARANTEE", "WEAPON_NORMAL"})
     @ParameterizedTest
     void shouldPullNothing(final Banner.RateMode rate) {
-        banner.setRate(rate);
-        banner.getPity().increment();
+        factory.setRate(rate);
+        banner = factory.getObject();
+
+        banner.pity().increment();
         when(rng.nextDouble(100)).thenReturn(101.0);
 
         var result = handler.check(banner);
         Assertions.assertFalse(result);
-        Assertions.assertTrue(banner.getHistory().get().isEmpty());
+        Assertions.assertTrue(banner.history().get().isEmpty());
     }
 }

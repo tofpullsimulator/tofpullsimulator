@@ -37,14 +37,14 @@ public record BannerDto(Banner.Spec spec,
      * @return The converted DTO object.
      */
     public static BannerDto toDto(final Banner banner) {
-        var history = banner.getHistory();
-        var pity = banner.getPity();
-        var statistics = banner.getStatistics();
+        var history = banner.history();
+        var pity = banner.pity();
+        var statistics = banner.statistics();
 
         return BannerDto.builder()
-                .spec(banner.getSpec())
-                .mode(banner.getRate())
-                .isTheory(banner.isTheory())
+                .spec(banner.spec())
+                .mode(banner.rate())
+                .isTheory(banner.theory())
                 .history(HistoryDto.builder()
                         .items(history.get())
                         .last(history.getLast())
@@ -66,7 +66,7 @@ public record BannerDto(Banner.Spec spec,
                         .normal(statistics.getNormal())
                         .bannerWeapon(statistics.getWeaponBanner())
                         .build())
-                .tokens(banner.getTokens().get())
+                .tokens(banner.tokens().getWeaponTokens())
                 .build();
     }
 

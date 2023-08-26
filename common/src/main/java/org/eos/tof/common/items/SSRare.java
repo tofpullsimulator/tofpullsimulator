@@ -1,8 +1,7 @@
 package org.eos.tof.common.items;
 
-import java.util.Random;
-import java.util.Set;
 import java.util.random.RandomGenerator;
+import java.util.Set;
 
 import lombok.Getter;
 
@@ -12,7 +11,7 @@ import lombok.Getter;
  * @author Eos
  */
 @Getter
-public class SSRare implements Item {
+public class SSRare implements SSRItem {
 
     private static final Set<String> OPTIONS = Set.of(
             "Rosy Edge",
@@ -25,16 +24,12 @@ public class SSRare implements Item {
             "Molten Shield V2",
             "Thunderblades"
     );
-    private static final String[] OPTIONS_LIST = OPTIONS.toArray(String[]::new);
+    /**
+     * A list op standard SSR options.
+     */
+    protected static final String[] OPTIONS_LIST = OPTIONS.toArray(String[]::new);
 
     private final String name;
-
-    /**
-     * Create a new super-super rare rarity item.
-     */
-    public SSRare() {
-        this(new Random());
-    }
 
     /**
      * Create a new super-super rare rarity item.
@@ -56,10 +51,9 @@ public class SSRare implements Item {
     }
 
     /**
-     * Checks if the current item is a standard weapon or not.
-     *
-     * @return Standard if the standard pool contains the current weapons' name.
+     * {@inheritDoc}
      */
+    @Override
     public boolean isStandard() {
         return OPTIONS.contains(this.name);
     }

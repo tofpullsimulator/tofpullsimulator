@@ -32,7 +32,7 @@ class BannerControllerTest {
                         .content("""
                                 {
                                     "spec": "Yulan",
-                                    "mode": "normal",
+                                    "mode": "weapon_normal",
                                     "theory": true
                                 }"""))
                 .andExpect(status().isOk());
@@ -50,7 +50,7 @@ class BannerControllerTest {
                         .content("""
                                 {
                                     "spec": "Yulan",
-                                    "mode": "normal",
+                                    "mode": "weapon_normal",
                                     "theory": true
                                 }"""))
                 .andExpect(status().isOk());
@@ -63,7 +63,7 @@ class BannerControllerTest {
                         .content("""
                                 {
                                     "spec": "invalid",
-                                    "mode": "normal",
+                                    "mode": "weapon_normal",
                                     "theory": true
                                 }"""))
                 .andExpect(status().isBadRequest());

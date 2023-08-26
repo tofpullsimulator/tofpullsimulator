@@ -16,30 +16,12 @@ public interface Counter {
     Integer get(final String metricName);
 
     /**
-     * Get the current value of the counter.
-     *
-     * @return The value of the counter.
-     */
-    default Integer get() {
-        return get(null);
-    }
-
-    /**
      * Set the value of the metric.
      *
      * @param metricName The metric name of the counter.
      * @param newValue   The new value of the metric.
      */
     void set(final String metricName, final int newValue);
-
-    /**
-     * Set the value of the counter.
-     *
-     * @param newValue The new value of the metric.
-     */
-    default void set(final int newValue) {
-        set(null, newValue);
-    }
 
     /**
      * Increment the metric.
@@ -51,9 +33,7 @@ public interface Counter {
     /**
      * Increment the counter.
      */
-    default void increment() {
-        increment(null);
-    }
+    void increment();
 
     /**
      * Reset the counter.
@@ -65,7 +45,5 @@ public interface Counter {
     /**
      * Reset the counter.
      */
-    default void reset() {
-        reset(null);
-    }
+    void reset();
 }

@@ -66,9 +66,19 @@ class PityCounterTest {
             "79,false"
     })
     @ParameterizedTest
-    void shouldBeSSRPity(final int amount, final boolean result) {
+    void shouldBeSSRWeaponPity(final int amount, final boolean result) {
         pity.set(PityCounter.SSR, amount);
-        Assertions.assertEquals(result, pity.isSsrPity());
+        Assertions.assertEquals(result, pity.isSsrWeaponPity());
+    }
+
+    @CsvSource({
+            "40,true",
+            "39,false"
+    })
+    @ParameterizedTest
+    void shouldBeSSRMatrixPity(final int amount, final boolean result) {
+        pity.set(PityCounter.SSR, amount);
+        Assertions.assertEquals(result, pity.isSsrMatrixPity());
     }
 
     @CsvSource({
@@ -78,23 +88,30 @@ class PityCounterTest {
             "9,80,false",
     })
     @ParameterizedTest
-    void shouldBeSSRPity(final int srAmount, final int ssrAmount, final boolean result) {
+    void shouldBeSSRWeaponPity(final int srAmount, final int ssrAmount, final boolean result) {
         pity.set(PityCounter.SR, srAmount);
         pity.set(PityCounter.SSR, ssrAmount);
-        Assertions.assertEquals(result, pity.isSrPity());
+        Assertions.assertEquals(result, pity.isSrWeaponPity());
     }
 
-    @Test
-    void shouldThrowExceptionWhenGettingWithoutMetricName() {
-        Assertions.assertThrows(UnsupportedOperationException.class,
-                () -> pity.get());
+    @CsvSource({
+            "10,39,true",
+            "10,40,true",
+            "9,39,true",
+            "9,40,false",
+    })
+    @ParameterizedTest
+    void shouldBeSSRMatrixPity(final int srAmount, final int ssrAmount, final boolean result) {
+        pity.set(PityCounter.SR, srAmount);
+        pity.set(PityCounter.SSR, ssrAmount);
+        Assertions.assertEquals(result, pity.isSrMatrixPity());
     }
 
     @Test
     void shouldIncrementBothSSRAndSR() {
         pity.increment();
-        Assertions.assertEquals(1, pity.get(PityCounter.SSR));
-        Assertions.assertEquals(1, pity.get(PityCounter.SR));
+        Assertions.assertEquals(1, pity.getSSR());
+        Assertions.assertEquals(1, pity.getSR());
     }
 
     @Test
@@ -103,7 +120,7 @@ class PityCounterTest {
         pity.set(PityCounter.WON, 10);
 
         pity.reset();
-        Assertions.assertEquals(0, pity.get(PityCounter.LOST));
-        Assertions.assertEquals(0, pity.get(PityCounter.WON));
+        Assertions.assertEquals(0, pity.getLost());
+        Assertions.assertEquals(0, pity.getWon());
     }
 }

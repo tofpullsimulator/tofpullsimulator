@@ -17,7 +17,8 @@ import org.springframework.stereotype.Component;
  * <pre>
  *     BannerFactory factory = new BannerFactor();
  *     factory.setSpec(Banner.Spec.YULAN);
- *     factory.setRate(Banner.RateMode.NORMAL);
+ *     factory.setRate(Banner.RateMode.WEAPON_NORMAL);
+ *     factory.setClazz(WeaponBanner.class);
  *     factory.setTheory(true);
  *
  *     Banner banner = factory.getObject();
@@ -26,6 +27,8 @@ import org.springframework.stereotype.Component;
  *
  * @author Eos
  * @see Banner
+ * @see MatrixBanner
+ * @see WeaponBanner
  */
 @RequiredArgsConstructor
 @Setter
@@ -33,29 +36,44 @@ import org.springframework.stereotype.Component;
 public class BannerFactory implements FactoryBean<Banner> {
 
     private Banner.Spec spec;
-    private Banner.RateMode rate = Banner.RateMode.NORMAL;
+    private Class<? extends Banner> clazz = WeaponBanner.class;
+    private Banner.RateMode rate;
     private boolean isTheory = true;
     private final History history;
     private final PityCounter pity;
     private final StatisticsCounter statistics;
     private final TokenCounter tokens;
-    private final Handler handlers;
+    private final Handler matrixHandlers;
+    private final Handler weaponHandlers;
 
+    /**
+     * {@inheritDoc}
+     */
     @NonNull
     @Override
     public Banner getObject() {
-        Banner banner = new Banner(spec);
-        banner.setRate(rate);
-        banner.setTheory(isTheory);
-        banner.setHistory(history);
-        banner.setPity(pity);
-        banner.setStatistics(statistics);
-        banner.setTokens(tokens);
-        banner.setHandlers(handlers);
+        Banner banner;
+        if (clazz.isAssignableFrom(MatrixBanner.class)) {
+            banner = new MatrixBanner(spec);
+            banner.handlers(matrixHandlers);
+        } else {
+            banner = new WeaponBanner(spec);
+            banner.handlers(weaponHandlers);
+        }
+
+        banner.rate(rate);
+        banner.theory(isTheory);
+        banner.history(history);
+        banner.pity(pity);
+        banner.statistics(statistics);
+        banner.tokens(tokens);
 
         return banner;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Class<?> getObjectType() {
         return Banner.class;

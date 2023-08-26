@@ -1,35 +1,40 @@
 package org.eos.tof.bot.commands.banner;
 
-import discord4j.core.event.domain.interaction.ChatInputAutoCompleteEvent;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
 import discord4j.core.object.command.ApplicationCommandInteractionOption;
 import discord4j.core.object.entity.Member;
-
-import java.util.Optional;
-
-import lombok.AllArgsConstructor;
 import org.eos.tof.bot.BannerService;
 import org.eos.tof.bot.commands.SlashSubCommand;
+import org.eos.tof.common.Banner;
+import org.eos.tof.common.MatrixBanner;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
+import java.util.Optional;
+
 /**
- * Command for resetting the banner of the member.
+ * Command for creating a new matrix banner for the member.
  *
  * @author Eos
  */
-@AllArgsConstructor
 @Component
-public class ResetCommand extends AbstractBannerSubCommand implements SlashSubCommand {
+public class CreateMatrixCommand extends CreateWeaponCommand implements SlashSubCommand {
 
-    private final BannerService service;
+    /**
+     * Create a new command to create a matrix banner.
+     *
+     * @param service The banner service to create matrix banners with.
+     */
+    public CreateMatrixCommand(final BannerService service) {
+        super(service);
+    }
 
     /**
      * {@inheritDoc}
      */
     @Override
     public String getName() {
-        return "banner reset";
+        return "banner create-matrix";
     }
 
     /**
@@ -38,36 +43,19 @@ public class ResetCommand extends AbstractBannerSubCommand implements SlashSubCo
     @Override
     public Mono<Void> handle(final ChatInputInteractionEvent event,
                              final ApplicationCommandInteractionOption option) {
+        String name = getName(option, Banner.Spec.ZEKE.name());
+        boolean isTheory = isTheory(option);
+
         Optional<Member> member = event.getInteraction().getMember();
         @SuppressWarnings({"java:S3655", "OptionalGetWithoutIsPresent"})
         long id = member.get().getUserData().id().asLong();
 
-        return service.reset(id).flatMap(b -> {
+        return service.get(id, name, isTheory, true, MatrixBanner.class).flatMap(b -> {
             var spec = b.spec();
             return event.reply()
                     .withEphemeral(true)
-                    .withContent("Reset banner '" + spec.getSimulacra() + " (" + spec.getWeapon() + ")'")
+                    .withContent("Created matrix banner '" + spec.getSimulacra() + " (" + spec.getMatrix() + ")'")
                     .then();
         });
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Mono<Void> handleError(final ChatInputInteractionEvent event, final Throwable error) {
-        return event.reply()
-                .withEphemeral(true)
-                .withContent("Sorry, an error occurred while resetting the banner")
-                .then();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Mono<Void> handle(final ChatInputAutoCompleteEvent event,
-                             final ApplicationCommandInteractionOption option) {
-        return Mono.empty();
     }
 }

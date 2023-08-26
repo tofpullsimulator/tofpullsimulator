@@ -1,8 +1,7 @@
 package org.eos.tof.common.items;
 
-import java.util.Random;
-import java.util.Set;
 import java.util.random.RandomGenerator;
+import java.util.Set;
 
 import lombok.Getter;
 import lombok.ToString;
@@ -26,13 +25,6 @@ public class SRare implements Item {
     private static final String[] OPTIONS_LIST = OPTIONS.toArray(String[]::new);
 
     private final String name;
-
-    /**
-     * Create a new super rare rarity item.
-     */
-    public SRare() {
-        this(new Random());
-    }
 
     /**
      * Create a new super rare rarity item.

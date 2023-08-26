@@ -11,7 +11,7 @@ import java.util.Optional;
 
 import org.eos.tof.bot.BannerService;
 import org.eos.tof.common.Banner;
-import org.eos.tof.common.counters.PityCounter;
+import org.eos.tof.common.WeaponBanner;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,13 +30,13 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest(classes = {PullCommand.class, CreateCommand.class, BannerService.class})
+@SpringBootTest(classes = {PullWeaponCommand.class, CreateWeaponCommand.class, BannerService.class})
 @ComponentScan(basePackages = {"org.eos.tof.common"})
 @EnableAutoConfiguration
-class PullCommandTest {
+class PullWeaponCommandTest {
 
     @Autowired
-    private PullCommand command;
+    private PullWeaponCommand command;
     @Autowired
     private BannerService service;
 
@@ -78,7 +78,7 @@ class PullCommandTest {
 
     @Test
     void shouldGetTheNameOfTheCommand() {
-        Assertions.assertEquals("banner pull", command.getName());
+        Assertions.assertEquals("banner pull-weapon", command.getName());
     }
 
     @Test
@@ -95,15 +95,15 @@ class PullCommandTest {
         var mono = service.get(0L);
         StepVerifier.create(mono)
                 .assertNext(it -> {
-                    Assertions.assertEquals(Banner.Spec.YULAN, it.getSpec());
-                    Assertions.assertEquals(1, it.getPity().get(PityCounter.SSR));
+                    Assertions.assertEquals(Banner.Spec.YULAN, it.spec());
+                    Assertions.assertEquals(1, it.pity().getSSR());
                 })
                 .verifyComplete();
     }
 
     @Test
     void shouldHandleInteractionEventAlreadyExistingBanner() {
-        service.pull(0L, "Yu Lan", false, 10).block();
+        service.pull(0L, "Yu Lan", false, 10, WeaponBanner.class).block();
 
         when(amountValue.asLong()).thenReturn(1L);
         when(amount.getValue()).thenReturn(Optional.of(amountValue));
@@ -117,8 +117,8 @@ class PullCommandTest {
         var mono = service.get(0L);
         StepVerifier.create(mono)
                 .assertNext(it -> {
-                    Assertions.assertEquals(Banner.Spec.YULAN, it.getSpec());
-                    Assertions.assertEquals(11, it.getPity().get(PityCounter.SSR));
+                    Assertions.assertEquals(Banner.Spec.YULAN, it.spec());
+                    Assertions.assertEquals(11, it.pity().getSSR());
                 })
                 .verifyComplete();
     }

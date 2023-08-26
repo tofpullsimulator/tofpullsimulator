@@ -16,32 +16,40 @@ import lombok.AllArgsConstructor;
 import org.eos.tof.bot.BannerService;
 import org.eos.tof.bot.commands.SlashSubCommand;
 import org.eos.tof.common.Banner;
+import org.eos.tof.common.WeaponBanner;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 /**
- * Command for pulling on the banner of the member.
+ * Command for pulling on the weapon banner of the member.
  *
  * @author Eos
  */
 @AllArgsConstructor
 @Component
-public class PullCommand extends AbstractBannerSubCommand implements SlashSubCommand {
+public class PullWeaponCommand extends AbstractBannerSubCommand implements SlashSubCommand {
 
-    private final BannerService service;
-    private final CreateCommand createCommand;
+    /**
+     * The banner service to pull on matrix banners with.
+     */
+    protected final BannerService service;
+    /**
+     * The command to create new weapon banners with.
+     */
+    protected final CreateWeaponCommand createWeaponCommand;
 
     /**
      * {@inheritDoc}
      */
     @Override
     public String getName() {
-        return "banner pull";
+        return "banner pull-weapon";
     }
 
     /**
      * {@inheritDoc}
      */
+    @SuppressWarnings("DuplicatedCode")
     @Override
     public Mono<Void> handle(final ChatInputInteractionEvent event,
                              final ApplicationCommandInteractionOption option) {
@@ -57,7 +65,7 @@ public class PullCommand extends AbstractBannerSubCommand implements SlashSubCom
             return bannerToReply(event, banner);
         }
 
-        var banner = service.pull(id, name, isTheory, amount);
+        var banner = service.pull(id, name, isTheory, amount, WeaponBanner.class);
         return bannerToReply(event, banner);
     }
 
@@ -81,7 +89,7 @@ public class PullCommand extends AbstractBannerSubCommand implements SlashSubCom
         String focusedOption = event.getFocusedOption().getName();
         if (focusedOption.equals("amount")) {
             List<ApplicationCommandOptionChoiceData> suggestions = List.of(
-                    ApplicationCommandOptionChoiceData.builder().name("Pull to A6").value("-1").build(),
+                    ApplicationCommandOptionChoiceData.builder().name("Pull to max").value("-1").build(),
                     ApplicationCommandOptionChoiceData.builder().name("80 pulls").value("80").build(),
                     ApplicationCommandOptionChoiceData.builder().name("10 pulls").value("10").build(),
                     ApplicationCommandOptionChoiceData.builder().name("1 pull").value("1").build()
@@ -90,38 +98,40 @@ public class PullCommand extends AbstractBannerSubCommand implements SlashSubCom
             return event.respondWithSuggestions(suggestions);
         }
 
-        return createCommand.handle(event, option);
+        return createWeaponCommand.handle(event, option);
     }
 
-    private Mono<Void> bannerToReply(final ChatInputInteractionEvent event, final Mono<Banner> banner) {
+    /**
+     * Convert the banner to a chat reply.
+     *
+     * @param event  The chat interaction event to be handled.
+     * @param banner The banner to convert.
+     * @return A reply with information from the banner.
+     */
+    protected Mono<Void> bannerToReply(final ChatInputInteractionEvent event, final Mono<Banner> banner) {
         return banner.flatMap(b -> {
-            var spec = b.getSpec();
-            var history = b.getHistory();
-            var pity = b.getPity();
-            var statistics = b.getStatistics();
-            var tokens = b.getTokens();
+            var spec = b.spec();
+            var history = b.history();
+            var pity = b.pity();
+            var statistics = b.statistics();
+            var tokens = b.tokens();
 
             return event.reply().withEmbeds(EmbedCreateSpec.builder()
                             .color(Color.PINK)
                             .title(spec.getSimulacra() + " (" + spec.getWeapon() + ")")
                             .author("ToF Pulling Simulator", null, null)
-                            .addField("", "", false)
                             .addField("SSR", statistics.getSSR().toString(), true)
                             .addField("SR", statistics.getSR().toString(), true)
                             .addField("Rare", statistics.getRare().toString(), true)
-                            .addField("", "", false)
                             .addField("Normal", statistics.getNormal().toString(), true)
                             .addField(spec.getWeapon(), statistics.getWeaponBanner().toString(), true)
                             .addField("", "", true)
-                            .addField("", "", false)
                             .addField("Pity", pity.getSSR().toString(), true)
                             .addField("Lost/Won", pity.getLost() + "/" + pity.getWon(), true)
-                            .addField("Black gold", tokens.get().toString(), true)
-                            .addField("", "", false)
+                            .addField("Flame gold", tokens.getWeaponTokens().toString(), true)
                             .addField("Last", history.getLast().getName(), true)
                             .addField("Total pulls", Integer.toString(history.get().size()), true)
                             .addField("", "", true)
-                            .addField("", "", false)
                             .timestamp(Instant.now())
                             .build())
                     .then();

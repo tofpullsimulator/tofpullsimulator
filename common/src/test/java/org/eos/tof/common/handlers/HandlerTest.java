@@ -3,10 +3,10 @@ package org.eos.tof.common.handlers;
 import org.eos.tof.common.Banner;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Spy;
+import org.junit.jupiter.api.Test;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.Spy;
 
 import static org.mockito.Mockito.verify;
 

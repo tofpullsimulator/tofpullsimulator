@@ -118,29 +118,39 @@ public class PityCounter implements Counter {
     }
 
     /**
-     * Check if the pity is to hit for SSR rarity.
+     * Check if the pity is to hit for SSR rarity for a weapon banner.
      *
      * @return True if the {@link #SSR} counter is 80.
      */
-    public boolean isSsrPity() {
+    public boolean isSsrWeaponPity() {
         return get(SSR) == 80;
     }
 
     /**
-     * Check if the pity is to hit for SR rarity.
+     * Check if the pity is to hit for SSR rarity for a matrix banner.
      *
-     * @return True if the {@link #SR} counter is 10 or {@link #SSR} counter is 79.
+     * @return True if the {@link #SSR} counter is 40.
      */
-    public boolean isSrPity() {
-        return get(SR) == 10 || store.get(SSR).get() == 79;
+    public boolean isSsrMatrixPity() {
+        return get(SSR) == 40;
     }
 
     /**
-     * {@inheritDoc}
+     * Check if the pity is to hit for SR rarity for a weapon banner.
+     *
+     * @return True if the {@link #SR} counter is 10 or {@link #SSR} counter is 79.
      */
-    @Override
-    public Integer get() {
-        throw new UnsupportedOperationException();
+    public boolean isSrWeaponPity() {
+        return getSR() == 10 || getSSR() == 79;
+    }
+
+    /**
+     * Check if the pity is to hit for SR rarity for a matrix banner.
+     *
+     * @return True if the {@link #SR} counter is 10 or {@link #SSR} counter is 39.
+     */
+    public boolean isSrMatrixPity() {
+        return getSR() == 10 || getSSR() == 39;
     }
 
     /**

@@ -1,12 +1,14 @@
 package org.eos.tof.common.handlers;
 
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.eos.tof.common.Banner;
 
 /**
  * @author Eos
  */
 @NoArgsConstructor
+@Setter
 public abstract class Handler {
 
     private Handler next;
