@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import org.eos.tof.common.Banner;
 import org.eos.tof.common.BannerFactory;
 import org.eos.tof.common.MatrixBanner;
-import org.eos.tof.common.items.Matrix;
 import org.springframework.cache.Cache;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.EnableCaching;
@@ -108,7 +107,8 @@ public class BannerService {
         Cache cache = getCache();
         Banner cached = cache.get(member, getter(name, theory, clazz));
 
-        boolean shouldEvict = cached != null && (cached.spec() != Banner.Spec.from(name) || evict);
+        boolean isSame = cached != null && (cached.getClass() != clazz || cached.spec() != Banner.Spec.from(name));
+        boolean shouldEvict = cached != null && (isSame || evict);
         if (shouldEvict) {
             cache.evict(member);
             cached.reset();
