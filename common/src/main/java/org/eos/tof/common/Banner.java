@@ -81,7 +81,7 @@ public abstract class Banner {
         /**
          * Mimi spec.
          */
-        MIMI("Meng Zhang", "Mimi", "Resounding Chant"),
+        MIMI("Meng Zhang", "Resounding Chant", "Mimi"),
         /**
          * Zeke spec.
          */
