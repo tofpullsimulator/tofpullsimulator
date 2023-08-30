@@ -33,7 +33,7 @@ public class TokenHandler extends Handler {
         statistics.increment();
         tokens.increment(TokenCounter.MATRIX_TOKENS);
 
-        int t = tokens.get(TokenCounter.MATRIX_TOKENS);
+        int t = tokens.getMatrixTokens();
         int canBuy = t / 80 + ((MatrixBanner) banner).boxes();
 
         canBuy = consumeTokens(tokens, TokenCounter.BUY_BRAIN_PIECES, statistics.getBrainPieces(), canBuy);

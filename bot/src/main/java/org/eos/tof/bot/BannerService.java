@@ -173,9 +173,12 @@ public class BannerService {
             try {
                 Banner.Spec spec = Banner.Spec.from(name);
                 factory.setSpec(spec);
-                factory.setRate(Banner.RateMode.WEAPON_NORMAL);
                 factory.setClazz(clazz);
                 factory.setTheory(theory);
+                factory.setRate(Banner.RateMode.WEAPON_NORMAL);
+                if (clazz == MatrixBanner.class) {
+                    factory.setRate(Banner.RateMode.MATRIX_NORMAL);
+                }
 
                 Banner banner = factory.getObject();
                 if (banner instanceof MatrixBanner mBanner) {

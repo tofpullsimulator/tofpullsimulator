@@ -49,8 +49,8 @@ public class WeaponDrawer extends Drawer {
 
         rightAlign(banner.tokens().getWeaponTokens().toString(), 52, 355);
         rightAlign(banner.statistics().getWeaponBanner().toString(), 52, 240);
-        String lostWon = banner.pity().getWon().toString() + "/" + banner.pity().getLost().toString();
-        rightAlign(lostWon, 52, 125);
+        String wonLost = banner.pity().getWon().toString() + "/" + banner.pity().getLost().toString();
+        rightAlign(wonLost, 52, 125);
         rightAlign(Integer.toString(banner.history().get().size()), 52, 10);
     }
 

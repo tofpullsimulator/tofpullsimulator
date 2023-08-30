@@ -141,7 +141,7 @@ public class TokenCounter implements Counter {
     @Override
     public void increment(final String metricName) {
         if (Objects.equals(metricName, MATRIX_TOKENS)) {
-            set(MATRIX_TOKENS, store.get(MATRIX_TOKENS).get() + 1);
+            set(MATRIX_TOKENS, get(MATRIX_TOKENS) + 1);
             return;
         }
 
@@ -153,7 +153,7 @@ public class TokenCounter implements Counter {
             amount = item.isStandard() ? 10 : 0;
         }
 
-        set(WEAPON_TOKENS, store.get(WEAPON_TOKENS).get() + amount);
+        set(WEAPON_TOKENS, get(WEAPON_TOKENS) + amount);
     }
 
     /**

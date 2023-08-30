@@ -8,6 +8,7 @@ import org.eos.tof.common.History;
 import org.eos.tof.common.items.Normal;
 import org.eos.tof.common.items.Rare;
 import org.eos.tof.common.items.SRare;
+import org.eos.tof.common.items.SSRItem;
 import org.eos.tof.common.items.SSRare;
 import org.springframework.stereotype.Component;
 
@@ -203,7 +204,7 @@ public class StatisticsCounter implements Counter {
             increment(R);
         } else if (last instanceof SRare) {
             increment(SR);
-        } else if (last instanceof SSRare) {
+        } else if (last instanceof SSRItem) {
             increment(SSR);
         }
     }

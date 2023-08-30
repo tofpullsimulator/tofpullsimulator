@@ -85,11 +85,11 @@ public class MatrixDrawer extends Drawer {
         rightAlign(banner.statistics().getSR().toString(), 32, 125);
         rightAlign(banner.statistics().getSSR().toString(), 32, 10);
 
-        rightAlign(banner.tokens().getWeaponTokens().toString(), 32, 355);
-        rightAlign(banner.statistics().getWeaponBanner().toString(), 32, 240);
-        String lostWon = banner.pity().getWon().toString() + "/" + banner.pity().getLost().toString();
-        rightAlign(lostWon, 32, 125);
-        rightAlign(Integer.toString(banner.history().get().size()), 32, 10);
+        rightAlign(banner.tokens().getMatrixTokens().toString(), 72, 355);
+        rightAlign(banner.statistics().getTotalMatrixPieces().toString(), 72, 240);
+        String wonLost = banner.pity().getWon().toString() + "/" + banner.pity().getLost().toString();
+        rightAlign(wonLost, 72, 125);
+        rightAlign(Integer.toString(banner.history().get().size()), 72, 10);
     }
 
     @Override

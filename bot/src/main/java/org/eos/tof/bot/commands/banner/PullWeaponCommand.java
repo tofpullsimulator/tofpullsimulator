@@ -95,7 +95,7 @@ public class PullWeaponCommand extends AbstractBannerSubCommand implements Slash
             List<ApplicationCommandOptionChoiceData> suggestions = List.of(
                     ApplicationCommandOptionChoiceData.builder().name("Pull to max").value("-1").build(),
                     ApplicationCommandOptionChoiceData.builder().name("80 pulls").value("80").build(),
-                    ApplicationCommandOptionChoiceData.builder().name("40 pulls").value("80").build(),
+                    ApplicationCommandOptionChoiceData.builder().name("40 pulls").value("40").build(),
                     ApplicationCommandOptionChoiceData.builder().name("10 pulls").value("10").build(),
                     ApplicationCommandOptionChoiceData.builder().name("1 pull").value("1").build()
             );
