@@ -4,9 +4,9 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.awt.Image;
+import java.awt.Rectangle;
 import java.io.File;
 import java.io.IOException;
 import java.text.Normalizer;
@@ -136,24 +136,9 @@ public abstract class Drawer {
         }
     }
 
-    protected void rightAlign(final Graphics2D g2d, final FontMetrics metrics, final String str,
-                              final int y, final int additionalWidth) {
-        int w = metrics.stringWidth(str);
-        if (w == 10) {
-            w += 80 + additionalWidth;
-        } else if (w == 20) {
-            w += 60 + additionalWidth;
-        } else if (w == 25) {
-            w += 65 + additionalWidth;
-        } else if (w == 30) {
-            w += 40 + additionalWidth;
-        } else if (w == 35) {
-            w += 45 + additionalWidth;
-        } else if (w == 45) {
-            w += 25 + additionalWidth;
-        }
-
-        g2d.drawString(str, w, y);
+    protected void rightAlign(final String str, final int y, final int padding) {
+        int x = width - metrics.stringWidth(str) - padding;
+        g2d.drawString(str, x, y);
     }
 
     protected String slugify(final String input) {

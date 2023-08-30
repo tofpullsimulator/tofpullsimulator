@@ -42,16 +42,16 @@ public class WeaponDrawer extends Drawer {
     @Override
     protected void drawValues() {
         g2d.setColor(Drawer.WHITE);
-        rightAlign(g2d, metrics, banner.statistics().getNormal().toString(), 52, 0);
-        rightAlign(g2d, metrics, banner.statistics().getRare().toString(), 52, 115);
-        rightAlign(g2d, metrics, banner.statistics().getSR().toString(), 52, 230);
-        rightAlign(g2d, metrics, banner.statistics().getSSR().toString(), 52, 345);
+        rightAlign(banner.statistics().getNormal().toString(), 52, 1400);
+        rightAlign(banner.statistics().getRare().toString(), 52, 1285);
+        rightAlign(banner.statistics().getSR().toString(), 52, 1170);
+        rightAlign(banner.statistics().getSSR().toString(), 52, 1055);
 
-        rightAlign(g2d, metrics, banner.tokens().getWeaponTokens().toString(), 52, 1045);
-        rightAlign(g2d, metrics, banner.statistics().getWeaponBanner().toString(), 52, 1160);
+        rightAlign(banner.tokens().getWeaponTokens().toString(), 52, 355);
+        rightAlign(banner.statistics().getWeaponBanner().toString(), 52, 240);
         String lostWon = banner.pity().getWon().toString() + "/" + banner.pity().getLost().toString();
-        rightAlign(g2d, metrics, lostWon, 52, 1260);
-        rightAlign(g2d, metrics, Integer.toString(banner.history().get().size()), 52, 1390);
+        rightAlign(lostWon, 52, 125);
+        rightAlign(Integer.toString(banner.history().get().size()), 52, 10);
     }
 
     @Override

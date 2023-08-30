@@ -6,16 +6,15 @@ import discord4j.core.object.command.ApplicationCommandInteractionOption;
 import discord4j.core.object.command.ApplicationCommandInteractionOptionValue;
 import discord4j.core.spec.EmbedCreateSpec;
 import discord4j.core.spec.InteractionApplicationCommandCallbackReplyMono;
+import discord4j.core.spec.MessageCreateFields;
 
 import java.util.Optional;
 
-import discord4j.core.spec.MessageCreateFields;
 import org.eos.tof.bot.BannerService;
 import org.eos.tof.common.Banner;
 import org.eos.tof.common.MatrixBanner;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
 import org.mockito.Mock;

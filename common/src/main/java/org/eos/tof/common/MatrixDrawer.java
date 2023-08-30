@@ -70,26 +70,26 @@ public class MatrixDrawer extends Drawer {
     @Override
     protected void drawValues() {
         g2d.setColor(Drawer.WHITE);
-        rightAlign(g2d, metrics, banner.tokens().getBuyBrainPieces().toString(), 32, 0);
-        rightAlign(g2d, metrics, banner.tokens().getBuyHandsPieces().toString(), 32, 115);
-        rightAlign(g2d, metrics, banner.tokens().getBuyHeadPieces().toString(), 32, 230);
-        rightAlign(g2d, metrics, banner.tokens().getBuyHeartPieces().toString(), 32, 345);
+        rightAlign(banner.tokens().getBuyBrainPieces().toString(), 32, 1400);
+        rightAlign(banner.tokens().getBuyHandsPieces().toString(), 32, 1285);
+        rightAlign(banner.tokens().getBuyHeadPieces().toString(), 32, 1170);
+        rightAlign(banner.tokens().getBuyHeartPieces().toString(), 32, 1055);
 
-        rightAlign(g2d, metrics, banner.statistics().getBrainPieces().toString(), 72, 0);
-        rightAlign(g2d, metrics, banner.statistics().getHandsPieces().toString(), 72, 115);
-        rightAlign(g2d, metrics, banner.statistics().getHeadPieces().toString(), 72, 230);
-        rightAlign(g2d, metrics, banner.statistics().getHeartPieces().toString(), 72, 345);
+        rightAlign(banner.statistics().getBrainPieces().toString(), 72, 1400);
+        rightAlign(banner.statistics().getHandsPieces().toString(), 72, 1285);
+        rightAlign(banner.statistics().getHeadPieces().toString(), 72, 1170);
+        rightAlign(banner.statistics().getHeartPieces().toString(), 72, 1055);
 
-        rightAlign(g2d, metrics, banner.statistics().getNormal().toString(), 32, 1045);
-        rightAlign(g2d, metrics, banner.statistics().getRare().toString(), 32, 1160);
-        rightAlign(g2d, metrics, banner.statistics().getSR().toString(), 32, 1275);
-        rightAlign(g2d, metrics, banner.statistics().getSSR().toString(), 32, 1390);
+        rightAlign(banner.statistics().getNormal().toString(), 32, 355);
+        rightAlign(banner.statistics().getRare().toString(), 32, 240);
+        rightAlign(banner.statistics().getSR().toString(), 32, 125);
+        rightAlign(banner.statistics().getSSR().toString(), 32, 10);
 
-        rightAlign(g2d, metrics, banner.tokens().getWeaponTokens().toString(), 72, 1045);
-        rightAlign(g2d, metrics, banner.statistics().getWeaponBanner().toString(), 72, 1160);
+        rightAlign(banner.tokens().getWeaponTokens().toString(), 32, 355);
+        rightAlign(banner.statistics().getWeaponBanner().toString(), 32, 240);
         String lostWon = banner.pity().getWon().toString() + "/" + banner.pity().getLost().toString();
-        rightAlign(g2d, metrics, lostWon, 72, 1260);
-        rightAlign(g2d, metrics, Integer.toString(banner.history().get().size()), 72, 1390);
+        rightAlign(lostWon, 32, 125);
+        rightAlign(Integer.toString(banner.history().get().size()), 32, 10);
     }
 
     @Override

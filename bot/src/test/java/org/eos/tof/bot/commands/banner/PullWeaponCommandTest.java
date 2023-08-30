@@ -6,10 +6,10 @@ import discord4j.core.object.command.ApplicationCommandInteractionOption;
 import discord4j.core.object.command.ApplicationCommandInteractionOptionValue;
 import discord4j.core.spec.EmbedCreateSpec;
 import discord4j.core.spec.InteractionApplicationCommandCallbackReplyMono;
+import discord4j.core.spec.MessageCreateFields;
 
 import java.util.Optional;
 
-import discord4j.core.spec.MessageCreateFields;
 import org.eos.tof.bot.BannerService;
 import org.eos.tof.common.Banner;
 import org.eos.tof.common.WeaponBanner;
