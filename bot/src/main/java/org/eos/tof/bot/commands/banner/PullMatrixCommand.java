@@ -4,8 +4,11 @@ import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
 import discord4j.core.object.command.ApplicationCommandInteractionOption;
 import discord4j.core.object.entity.Member;
 import discord4j.core.spec.EmbedCreateSpec;
+import discord4j.core.spec.MessageCreateFields;
 import discord4j.rest.util.Color;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.time.Instant;
 import java.util.Optional;
 
@@ -13,6 +16,7 @@ import org.eos.tof.bot.BannerService;
 import org.eos.tof.bot.commands.SlashSubCommand;
 import org.eos.tof.common.Banner;
 import org.eos.tof.common.MatrixBanner;
+import org.eos.tof.common.MatrixDrawer;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
@@ -71,40 +75,32 @@ public class PullMatrixCommand extends PullWeaponCommand implements SlashSubComm
     @Override
     protected Mono<Void> bannerToReply(final ChatInputInteractionEvent event, final Mono<Banner> banner) {
         return banner.flatMap(b -> {
-            var spec = b.spec();
-            var history = b.history();
-            var pity = b.pity();
-            var statistics = b.statistics();
-            var tokens = b.tokens();
-            var blocked = ((MatrixBanner) b).blocked();
+            try {
+                var spec = b.spec();
 
-            return event.reply().withEmbeds(EmbedCreateSpec.builder()
-                            .color(Color.PINK)
-                            .title(spec.getSimulacra() + " (" + spec.getWeapon() + ")")
-                            .author("ToF Pulling Simulator", null, null)
-                            .addField("SSR", statistics.getSSR().toString(), true)
-                            .addField("SR", statistics.getSR().toString(), true)
-                            .addField("Rare", statistics.getRare().toString(), true)
-                            .addField("Pity", pity.getSSR().toString(), true)
-                            .addField("Lost/Won", pity.getLost() + "/" + pity.getWon(), true)
-                            .addField("Overclocking chips", tokens.getMatrixTokens().toString(), true)
-                            .addField(spec.getMatrix(), statistics.getTotalMatrixPieces().toString(), true)
-                            .addField("Last", history.getLast().getName(), true)
-                            .addField("Total pulls", Integer.toString(history.get().size()), true)
-                            .addField("Brain pieces", statistics.getBrainPieces().toString(), true)
-                            .addField("Hands pieces", statistics.getHandsPieces().toString(), true)
-                            .addField("Head pieces", statistics.getHeadPieces().toString(), true)
-                            .addField("Heart pieces", statistics.getHeartPieces().toString(), true)
-                            .addField("Buy brain pieces", tokens.getBuyBrainPieces().toString(), true)
-                            .addField("Buy hands pieces", tokens.getBuyHandsPieces().toString(), true)
-                            .addField("Buy head pieces", tokens.getBuyHeadPieces().toString(), true)
-                            .addField("Buy heart pieces", tokens.getBuyHeartPieces().toString(), true)
-                            .addField("Boxes", Integer.toString(((MatrixBanner) b).boxes()), true)
-                            .addField("Blocking", blocked == null ? "None" : blocked.toString(), true)
-                            .addField("", "", true)
-                            .timestamp(Instant.now())
-                            .build())
-                    .then();
+                Optional<Member> member = event.getInteraction().getMember();
+                @SuppressWarnings({"java:S3655", "OptionalGetWithoutIsPresent"})
+                long id = member.get().getUserData().id().asLong();
+                String name = "banner-" + id + ".png";
+
+                var drawer = new MatrixDrawer(b);
+                drawer.draw();
+                drawer.save(name, "png");
+                var in = new FileInputStream(name);
+
+                return event.reply()
+                        .withFiles(MessageCreateFields.File.of(name, in))
+                        .withEmbeds(EmbedCreateSpec.builder()
+                                .color(Color.PINK)
+                                .title(spec.getSimulacra() + " (" + spec.getMatrix() + ")")
+                                .author("ToF Pulling Simulator", null, null)
+                                .image("attachment://" + name)
+                                .timestamp(Instant.now())
+                                .build())
+                        .then();
+            } catch (IOException e) {
+                return Mono.error(e);
+            }
         });
     }
 }

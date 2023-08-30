@@ -9,6 +9,7 @@ import discord4j.core.spec.InteractionApplicationCommandCallbackReplyMono;
 
 import java.util.Optional;
 
+import discord4j.core.spec.MessageCreateFields;
 import org.eos.tof.bot.BannerService;
 import org.eos.tof.common.Banner;
 import org.eos.tof.common.WeaponBanner;
@@ -68,6 +69,7 @@ class PullWeaponCommandTest {
 
         when(reply.withEphemeral(anyBoolean())).thenReturn(reply);
         when(reply.withContent(anyString())).thenReturn(reply);
+        when(reply.withFiles(any(MessageCreateFields.File.class))).thenReturn(reply);
         when(reply.withEmbeds(any(EmbedCreateSpec.class))).thenReturn(reply);
         when(reply.then()).thenReturn(Mono.empty());
         when(option.getOption("amount")).thenReturn(Optional.of(amount));

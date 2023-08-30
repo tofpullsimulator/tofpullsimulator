@@ -52,13 +52,13 @@ public class PullHandler extends Handler {
 
         n -= mode.getSr();
         if (n <= 0) {
-            history.add(new SRare(rng));
+            history.add(new SRare(rng, true));
             return checkNext(banner);
         }
 
         n -= mode.getR();
         if (n <= 0) {
-            history.add(new Rare(rng));
+            history.add(new Rare(rng, true));
             return checkNext(banner);
         }
 

@@ -5,9 +5,12 @@ import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
 import discord4j.core.object.command.ApplicationCommandInteractionOption;
 import discord4j.core.object.entity.Member;
 import discord4j.core.spec.EmbedCreateSpec;
+import discord4j.core.spec.MessageCreateFields;
 import discord4j.discordjson.json.ApplicationCommandOptionChoiceData;
 import discord4j.rest.util.Color;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
@@ -16,6 +19,7 @@ import lombok.AllArgsConstructor;
 import org.eos.tof.bot.BannerService;
 import org.eos.tof.bot.commands.SlashSubCommand;
 import org.eos.tof.common.Banner;
+import org.eos.tof.common.WeaponDrawer;
 import org.eos.tof.common.WeaponBanner;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
@@ -110,31 +114,31 @@ public class PullWeaponCommand extends AbstractBannerSubCommand implements Slash
      */
     protected Mono<Void> bannerToReply(final ChatInputInteractionEvent event, final Mono<Banner> banner) {
         return banner.flatMap(b -> {
-            var spec = b.spec();
-            var history = b.history();
-            var pity = b.pity();
-            var statistics = b.statistics();
-            var tokens = b.tokens();
+            try {
+                var spec = b.spec();
 
-            return event.reply().withEmbeds(EmbedCreateSpec.builder()
-                            .color(Color.PINK)
-                            .title(spec.getSimulacra() + " (" + spec.getWeapon() + ")")
-                            .author("ToF Pulling Simulator", null, null)
-                            .addField("SSR", statistics.getSSR().toString(), true)
-                            .addField("SR", statistics.getSR().toString(), true)
-                            .addField("Rare", statistics.getRare().toString(), true)
-                            .addField("Normal", statistics.getNormal().toString(), true)
-                            .addField(spec.getWeapon(), statistics.getWeaponBanner().toString(), true)
-                            .addField("", "", true)
-                            .addField("Pity", pity.getSSR().toString(), true)
-                            .addField("Lost/Won", pity.getLost() + "/" + pity.getWon(), true)
-                            .addField("Flame gold", tokens.getWeaponTokens().toString(), true)
-                            .addField("Last", history.getLast().getName(), true)
-                            .addField("Total pulls", Integer.toString(history.get().size()), true)
-                            .addField("", "", true)
-                            .timestamp(Instant.now())
-                            .build())
-                    .then();
+                Optional<Member> member = event.getInteraction().getMember();
+                @SuppressWarnings({"java:S3655", "OptionalGetWithoutIsPresent"})
+                long id = member.get().getUserData().id().asLong();
+                String name = "banner-" + id + ".png";
+
+                var drawer = new WeaponDrawer(b);
+                drawer.draw();
+                drawer.save(name, "png");
+                var in = new FileInputStream(name);
+
+                return event.reply()
+                        .withFiles(MessageCreateFields.File.of(name, in))
+                        .withEmbeds(EmbedCreateSpec.builder()
+                                .color(Color.PINK)
+                                .title(spec.getSimulacra() + " (" + spec.getWeapon() + ")")
+                                .image("attachment://" + name)
+                                .timestamp(Instant.now())
+                                .build())
+                        .then();
+            } catch (IOException e) {
+                return Mono.error(e);
+            }
         });
     }
 }

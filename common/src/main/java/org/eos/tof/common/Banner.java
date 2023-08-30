@@ -81,7 +81,7 @@ public abstract class Banner {
         /**
          * Mimi spec.
          */
-        MIMI("Meng Zhang", "Mimi", "Mimi"),
+        MIMI("Meng Zhang", "Mimi", "Resounding Chant"),
         /**
          * Zeke spec.
          */
@@ -141,7 +141,31 @@ public abstract class Banner {
         /**
          * Lin spec.
          */
-        LIN("Shadoweave", "Night City Never Sleeps", "Lin");
+        LIN("Shadoweave", "Night City Never Sleeps", "Lin"),
+        /**
+         * Saki Fuwa spec.
+         */
+        SAKIFUWA("Heartstream", "Super Flow", "Saki Fuwa"),
+        /**
+         * Ruby spec.
+         */
+        RUBY("Spark", "White Rabbit Dance", "Ruby"),
+        /**
+         * Cobalt-B spec.
+         */
+        COBALTB("Flaming Revolver", "Intuitive Tactic", "Cobalt-B"),
+        /**
+         * Claudia spec.
+         */
+        CLAUDIA("Guren Blade", "Multi-directional Strike", "Claudia"),
+        /**
+         * Frigg spec.
+         */
+        FRIGG("Balmung", "Iron Mind and Body", "Frigg"),
+        /**
+         * Nemesis spec.
+         */
+        NEMESIS("Venus", "Life Bridging", "Nemesis");
 
         private final String weapon;
         private final String matrix;

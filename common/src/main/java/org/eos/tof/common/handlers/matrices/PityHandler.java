@@ -45,7 +45,7 @@ public class PityHandler extends Handler {
             helper.pullMatrix(banner);
         } else if (pity.isSrMatrixPity()) {
             pity.reset(PityCounter.SR);
-            banner.history().add(new SRare(rng));
+            banner.history().add(new SRare(rng, true));
         }
 
         return checkNext(banner);
