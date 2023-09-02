@@ -77,6 +77,10 @@ public abstract class Banner {
         /**
          * Mimi spec.
          */
+        LINGHAN("Overseer", "Ling Han", "Ling Han"),
+        /**
+         * Mimi spec.
+         */
         FEISE("Zhongrui", "Fei Se", "Fei Se"),
         /**
          * Mimi spec.

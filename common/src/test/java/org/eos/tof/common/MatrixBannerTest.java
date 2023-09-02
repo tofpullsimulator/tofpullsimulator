@@ -1,8 +1,5 @@
 package org.eos.tof.common;
 
-import org.eos.tof.common.counters.PityCounter;
-import org.eos.tof.common.counters.StatisticsCounter;
-import org.eos.tof.common.counters.TokenCounter;
 import org.eos.tof.common.handlers.matrices.MatrixHandlers;
 import org.eos.tof.common.handlers.SSRareHelper;
 import org.eos.tof.common.handlers.weapons.WeaponHandlers;
@@ -16,12 +13,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest(classes = {
         BannerFactory.class,
         Config.class,
-        History.class,
         MatrixHandlers.class,
-        PityCounter.class,
         SSRareHelper.class,
-        StatisticsCounter.class,
-        TokenCounter.class,
         WeaponHandlers.class
 })
 class MatrixBannerTest {

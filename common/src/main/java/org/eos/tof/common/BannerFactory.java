@@ -39,10 +39,6 @@ public class BannerFactory implements FactoryBean<Banner> {
     private Class<? extends Banner> clazz = WeaponBanner.class;
     private Banner.RateMode rate;
     private boolean isTheory = true;
-    private final History history;
-    private final PityCounter pity;
-    private final StatisticsCounter statistics;
-    private final TokenCounter tokens;
     private final Handler matrixHandlers;
     private final Handler weaponHandlers;
 
@@ -63,10 +59,11 @@ public class BannerFactory implements FactoryBean<Banner> {
 
         banner.rate(rate);
         banner.theory(isTheory);
+        var history = new History();
         banner.history(history);
-        banner.pity(pity);
-        banner.statistics(statistics);
-        banner.tokens(tokens);
+        banner.pity(new PityCounter());
+        banner.statistics(new StatisticsCounter(history));
+        banner.tokens(new TokenCounter(history));
 
         return banner;
     }

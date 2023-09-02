@@ -4,12 +4,9 @@ import java.util.random.RandomGenerator;
 
 import org.eos.tof.common.Banner;
 import org.eos.tof.common.BannerFactory;
-import org.eos.tof.common.counters.PityCounter;
-import org.eos.tof.common.counters.StatisticsCounter;
 import org.eos.tof.common.counters.TokenCounter;
 import org.eos.tof.common.handlers.matrices.MatrixHandlers;
 import org.eos.tof.common.handlers.SSRareHelper;
-import org.eos.tof.common.History;
 import org.eos.tof.common.items.Rare;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -22,12 +19,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 @SpringBootTest(classes = {
         BannerFactory.class,
-        History.class,
         MatrixHandlers.class,
-        PityCounter.class,
         SSRareHelper.class,
-        StatisticsCounter.class,
-        TokenCounter.class,
         TokenHandler.class,
         WeaponHandlers.class
 })
