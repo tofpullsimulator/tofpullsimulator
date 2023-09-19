@@ -75,13 +75,13 @@ public abstract class Banner {
     @Getter
     public enum Spec {
         /**
-         * Mimi spec.
+         * Ling Han spec.
          */
         LINGHAN("Overseer", "Ling Han", "Ling Han"),
         /**
-         * Mimi spec.
+         * Fei Se spec.
          */
-        FEISE("Zhongrui", "Fei Se", "Fei Se"),
+        FEISE("Endless Bloom", "Lissom", "Fei Se"),
         /**
          * Mimi spec.
          */

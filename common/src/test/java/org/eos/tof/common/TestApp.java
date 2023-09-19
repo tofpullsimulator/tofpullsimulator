@@ -37,7 +37,7 @@ public class TestApp implements CommandLineRunner {
     public void run(final String... args) {
         factory.setClazz(MatrixBanner.class);
         factory.setRate(Banner.RateMode.MATRIX_NORMAL);
-        factory.setSpec(Banner.Spec.YULAN);
+        factory.setSpec(Banner.Spec.FEISE);
 
         var banner = factory.getObject();
         if (banner instanceof MatrixBanner mBanner) {

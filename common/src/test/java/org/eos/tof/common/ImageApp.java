@@ -37,14 +37,14 @@ public class ImageApp implements CommandLineRunner {
      */
     @Override
     public void run(final String... args) throws IOException {
-        factory.setClazz(WeaponBanner.class);
+        factory.setClazz(MatrixBanner.class);
         factory.setRate(Banner.RateMode.MATRIX_NORMAL);
-        factory.setSpec(Banner.Spec.YULAN);
+        factory.setSpec(Banner.Spec.FEISE);
 
         var banner = factory.getObject();
         banner.pull(80);
 
-        var drawer = new WeaponDrawer(banner);
+        var drawer = new MatrixDrawer(banner);
         drawer.draw();
         drawer.save(banner.spec().getSimulacra() + ".png", "png");
 
