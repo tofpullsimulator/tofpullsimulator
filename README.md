@@ -5,7 +5,7 @@ ToF Pulling Simulator lets you simulate Tower of Fantasy's banner orders.
 ## Installing
 
 ```bash
-$ git clone git@github.com:SCThijsse/tof-pull-simulator.git
+$ git clone git@github.com:/tof-pull-simulator.git
 $ mvn clean package
 ```
 
